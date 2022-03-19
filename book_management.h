@@ -2,7 +2,8 @@
 #define BOOK_MANAGEMENT_GUARD__H
 
 #include <stdio.h>
-
+// git commit -m "xxx"
+// git push 
 /*You can extend the structs (Book and BookList) defined in this head file;
   However, you may not change the function prototypes. 
   You are also free to add additional head files and data structures as needed. 

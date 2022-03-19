@@ -8,6 +8,8 @@
 #include "librarian.h"
 #include "utility.h"
 
+#include "book_management.h"
+
 ////
 // Code module for main library menu and file management
 // Reads the book and initialises the problem data
