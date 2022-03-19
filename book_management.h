@@ -14,12 +14,21 @@ typedef struct _User {
 		char *username; //book title
 		char *password; //comma separated list of authors
 		struct _User *next;
+
+		Book *borrowed[4];//--要改
+        int numBorrowed;
 }User;
 
 typedef struct _UserList {
 	 User* list; // pointer to a list of struct Book.
 	 unsigned int length; // number of elements in the (Book*) List 
 }UserList;
+
+typedef struct _Userjudge {
+	    
+		char *username; //book title
+		int judge;
+}Userjudge;
 
 typedef struct _Book {
 	    unsigned int id; //Book ID

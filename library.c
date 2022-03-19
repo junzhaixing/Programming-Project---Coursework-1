@@ -150,11 +150,14 @@ void libraryCLI( char *bookFile ) {
         option = optionChoice();
 
         if( option == 1 ) {
-            reg( theLibrary );//user list还未设置
+            reg( theuser );//user list还未设置
         }
         else if( option == 2 ) {
-            printf("\nLibrarian login\n");
-            librarianCLI( theLibrary );
+            Userjudge k=login(theuser);//user list还未设置
+            if(k.judge==1)
+                UserCLI( k.username, theLibrary );
+            else if(k.judge==2)
+                librarianCLI(theLibrary);
         }
         else if( option == 3 ) {
             //search for book

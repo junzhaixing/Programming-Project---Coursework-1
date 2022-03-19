@@ -5,29 +5,13 @@
 #include "user.h"
 #include "utility.h"
 
+#include "book_management.h"
 ////
 // Code module for the library user
 // They can look for available books,
 // borrow and return books
 
-// List the books that are available to borrow
-// Input
-// bookList - the array of Book structures
-// numBooks - the number of books
 
-void listAvailableBooks( Book *bookList, int numBooks ) {
-
-  // TO DO :  
-
-  // print out available books with format "list number - author - title" on each line
-  for(int i=0; i<numBooks; i++)
-  {
-      if(bookList[i].available==1)
-            printf("%d - %s - %s\n",i,bookList[i].author,bookList[i].title);
-  }
-
-  return;
-}
 
 // Borrow a book 
 // Input
@@ -203,31 +187,36 @@ void returnBook( User *theUser, Book *bookList, int numBooks, int maxBorrowed ) 
 
 // Menu system for library user
 
-void userCLI( Library *theLibrary ) {
+void userCLI( char *name, Library *theLibrary ) {
     int userLoggedIn = 1;
     int option;
 
     while( userLoggedIn ){
-        printf("\n User options\n 1 List available books\n 2 Borrow book\n 3 Return book\n 4 Log out\n Choice:");
+        printf("\n(logged in as: %s)\n",name);
+        printf("Please choose an option:\n");
+        printf("1) Borrow a book\n 2) Return a book\n3) Search for book\n4) Display all books\n5) Log out\n Option: ");
         option = optionChoice();
 
-        if( option == 1 ) {
+        if( option == 1 ) {//借书
             printf("\nList available books:\n");
             listAvailableBooks( theLibrary->bookList, theLibrary->numBooks );
         }
-        else if( option == 2 ) {
+        else if( option == 2 ) {//还书
             printf("\nBorrow book from library:\n");
             listAvailableBooks( theLibrary->bookList, theLibrary->numBooks );
             borrowBook( &(theLibrary->theUser), theLibrary->bookList, theLibrary->numBooks, theLibrary->maxBorrowed );
         }
-        else if( option == 3 ) {
-            printf("\nReturn book from my list:\n");
-            listMyBooks( &(theLibrary->theUser), theLibrary->bookList, theLibrary->maxBorrowed );
-            returnBook( &(theLibrary->theUser), theLibrary->bookList, theLibrary->numBooks, theLibrary->maxBorrowed );
+        else if( option == 3 ) {//查找书--
+            SearchBook( bookList, numBooks );
+            
         }
-        else if( option == 4 ) {
+        else if( option == 4 ) {//展示书--
             userLoggedIn = 0;
             printf("\nLogging out\n");
+        }
+        else if( option == 5 ) {
+            userLoggedIn = 0;
+            printf("\nLogging out...\n");
         }
         else
             printf("\nUnknown option\n");
@@ -235,3 +224,94 @@ void userCLI( Library *theLibrary ) {
     return;
 }
 
+// Menu system for the librarian
+
+void librarianCLI( Library *theLibrary ) {
+    int librarianLoggedIn = 1;
+    int option;
+
+    while( librarianLoggedIn ){
+        printf("\n(logged in as: librarian)\n");
+        printf("Please choose an option:\n");
+        printf("1) Add a book\n2) Remove a book\n3) Search for book\n4) Display all books\n5) Log out\n Option: ");
+        option = optionChoice();
+
+        if( option == 1 ) {
+            printf("\nadd a book\n");//tianjiashu,--
+            
+        }
+        else if( option == 2 ) {//移除书--
+            printf("\nList of borrowed books:\n");
+            listBorrowedBooks( theLibrary->bookList, theLibrary->numBooks );
+        }
+        else if( option == 3 ) {//查找书--
+            
+            SearchBook( bookList, numBooks );
+        }
+        else if( option == 4 ) {//展示书--
+            librarianLoggedIn = 0;
+            printf("\nLogging out\n");
+        }
+        else if( option == 5 ) {
+            librarianLoggedIn = 0;
+            printf("\nLogging out...\n");
+        }
+        else
+            printf("\nSorry,the option you entered was invalid, please try again.\n");
+    }
+    return;
+}
+
+
+void SearchBook( Book *bookList, int numBooks )//--
+{
+    int SearchIn=1;
+    int option;
+
+    printf("\nLoading search menu...\n");
+    while( SearchIn ){
+        printf("\nLoading search menu...\n");  
+        printf("Please choose an option:\n");
+        printf("1) Find book by title\n2) Find book by author\n3) Find book by year\n4) Return to previous menu\n Option: ");
+        option = optionChoice();
+
+        if( option == 1 ) {//按名字搜--
+            char title[80];
+            printf("Please enter the title:");
+            fgets(title,80,stdin);
+            BookList k=find_book_by_title (title);
+
+        }
+        else if( option == 2 ) {//按作者--
+            char author[80];
+            printf("Please enter the author:");
+            fgets(author,80,stdin);
+            BookList k=find_book_by_author (author);
+            
+        }
+        else if( option == 3 ) {//按年--
+            int year;
+            printf("Please enter the author:");
+            year = optionChoice();
+            BookList k=find_book_by_year (year);
+        }
+        else if( option == 4 ) {//退出--
+            SearchIn = 0;
+            printf("\nReturning to previous menu...\n");
+        }
+        else
+            printf("\nSorry,the option you entered was invalid, please try again.\n");
+      }
+}
+
+void listBooks( Book *bookList, int numBooks ) {
+
+  // TO DO :
+  //
+  // list the books in format "name - title"
+  for(int i=0; i<numBooks; i++)
+  {
+      printf("%s - %s\n",bookList[i].author,bookList[i].title);
+  }
+  return;
+}
