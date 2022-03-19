@@ -1,6 +1,6 @@
 #include "book_management.h"
 
-#define CreateNode(p)  p=(Book *)malloc(sizeof(Book));
+#define CreateNode(p)  p=(Book*)malloc(sizeof(Book));
 #define DeleteNode(p)   free((void *)p); 
 
 /*Initialize the linked list*/
