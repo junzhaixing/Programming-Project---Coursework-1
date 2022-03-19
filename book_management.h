@@ -9,6 +9,17 @@
   You are also free to add additional head files and data structures as needed. 
 */
 
+typedef struct _User {
+	    
+		char *username; //book title
+		char *password; //comma separated list of authors
+		struct _User *next;
+}User;
+
+typedef struct _UserList {
+	 User* list; // pointer to a list of struct Book.
+	 unsigned int length; // number of elements in the (Book*) List 
+}UserList;
 
 typedef struct _Book {
 	    unsigned int id; //Book ID

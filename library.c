@@ -8,6 +8,8 @@
 #include "librarian.h"
 #include "utility.h"
 
+
+#include "reg_login.h"
 #include "book_management.h"
 
 ////
@@ -144,23 +146,30 @@ void libraryCLI( char *bookFile ) {
     initLibrary( bookFile, theLibrary );
    
     while( libraryOpen ){
-        printf("\n Main menu options\n 1 User login\n 2 Librarian login\n 3 Exit system\n Choice:");
+        printf("\nPlease choose an option\n1) Register\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
         option = optionChoice();
 
         if( option == 1 ) {
-            printf("\nUser login\n");
-            userCLI( theLibrary );
+            reg( theLibrary );//user list还未设置
         }
         else if( option == 2 ) {
             printf("\nLibrarian login\n");
             librarianCLI( theLibrary );
         }
         else if( option == 3 ) {
+            //search for book
+            printf("\nbook\n");
+        }
+        else if( option == 4 ) {
+            //zhanshiliebiaohanshu
+            printf("\nall book is\n");
+        }
+        else if( option == 5 ) {
             libraryOpen = 0;
-            printf("\nClosing\n");
+            printf("\nThank you for using the library!\nGoodbye!\n");
         }
         else
-            printf("\nUnknown option\n");
+            printf("\nSorry,the option you entered was invalid, please try again.\n");
     }
 
     exitLibrary( theLibrary );

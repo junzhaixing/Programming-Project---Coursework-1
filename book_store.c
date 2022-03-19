@@ -4,7 +4,7 @@
 #define DeleteNode(p)   free((void *)p); 
 
 /*Initialize the linked list*/
-Book* lookbook()                        
+BookList lookbook()                        
 { 
     int x;Book *first,*p,*last;
     CreateNode(first);     /* 建立附加头结点 */
@@ -15,11 +15,14 @@ Book* lookbook()
        last->next=p;last=p;         /*新结点插入到链表结尾*/
     }
     last->next=NULL;        /*最后一个结点指针域赋值为NULL*/
-    return first;
+    BookList K;
+    K.list=first;
+    K.length=x;
+    return K;
 } 
 
 /*delet the linked list*/
-Book* deletallbook(Book *h)      /* h 传入单链表头结点指针*/
+Book deletallbook(Book *h)      /* h 传入单链表头结点指针*/
 {  
     Book *p=h,*q;
     while(p!=NULL)       /* p没有指向链表尾则循环 */
