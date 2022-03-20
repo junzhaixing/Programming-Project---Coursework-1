@@ -11,8 +11,8 @@
 
 typedef struct _User {
 	    
-		char *username; //book title
-		char *password; //comma separated list of authors
+		char *username; //username
+		char *password; //user password
 		struct _User *next;
 
 		Book *borrowed[4];//--要改
@@ -20,14 +20,14 @@ typedef struct _User {
 }User;
 
 typedef struct _UserList {
-	 User* list; // pointer to a list of struct Book.
-	 unsigned int length; // number of elements in the (Book*) List 
+	 User* list; // pointer to a list of struct user.
+	 unsigned int length; // number of elements in the (user*) List 
 }UserList;
 
-typedef struct _Userjudge {
+typedef struct _Userjudge {//for change the admin and user part
 	    
-		char *username; //book title
-		int judge;
+		char *username; //username
+		int judge; //judge the id
 }Userjudge;
 
 typedef struct _Book {
@@ -37,11 +37,17 @@ typedef struct _Book {
 		unsigned int year; // year of publication
 		unsigned int copies; //number of copies the library has
 		struct _Book *next; //pointer to the next book element
+
+		
 }Book;
 
 typedef struct _BookList {
-	 Book* list; // pointer to a list of struct Book.
-	 unsigned int length; // number of elements in the (Book*) List 
+	Book* list; // pointer to a list of struct Book.
+	unsigned int length; // number of elements in the (Book*) List 
+
+	 //for printf排版整齐
+	int title_longest;//record longest length of title
+	int authors_longest;//record longest author of title
 }BookList;
 
 

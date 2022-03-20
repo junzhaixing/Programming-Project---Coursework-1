@@ -1,3 +1,5 @@
+
+#include "string.h"
 #include "book_management.h"
 
 #define CreateNode(p)  p=(Book*)malloc(sizeof(Book));
@@ -34,14 +36,37 @@ Book deletallbook(Book *h)      /* h 传入单链表头结点指针*/
     return NULL;
 } 
 /*print all the book information*/
-void printbook(Book *h)     /* h为头指针 */
+void printbook(BookList h)     /* h为头指针 */
 {   
-    Book *p=h->next;  
+    Book *p=h.list->next;
+    int interval=7;  
     /*p指向第一个数据结点, 如果链表不带附加头结点则p=h;*/
-    printf("ID Title Author year copies");
-     while(p) 
+    //打印表头
+    printf("ID");
+    for(int i=1;i<=interval;i++)printf(" ");
+    printf("Title");
+    for(int i=1;i<=h.title_longest+interval-5;i++)printf(" ");
+    printf("Author");
+    for(int i=1;i<=h.author_longest+interval-5;i++)printf(" ");
+    printf("year");
+    for(int i=1;i<=interval;i++)printf(" ");
+    printf("copies\n");
+
+    while(p) 
     { 
-        printf("%4d %s %s %4d %4d\n",p->id,p->title,p->authors,p->year,p->copies);
+        int tl=strlen(p->title);
+        int al=strlen(p->authors);
+
+        printf("%d",p->id);//这里只考虑了id小于10--
+        for(int i=1;i<=interval+1;i++)printf(" ");
+        printf("%s",p->title);
+        for(int i=1;i<=h.title_longest+interval-tl;i++)printf(" ");
+        printf("%s",p->authors);
+        for(int i=1;i<=h.authors_longest+interval-tl;i++)printf(" ");
+        printf("%d",p->year);
+        for(int i=1;i<=interval;i++)printf(" ");
+        printf("%d\n",p->copies);
+
         p=p->next; 
     }
 } 
