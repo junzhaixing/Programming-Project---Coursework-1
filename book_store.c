@@ -46,37 +46,42 @@ Book deletallbook(Book *h)      /* h 传入单链表头结点指针*/
 /*print all the book information*/
 void printbook(BookList h)     /* h为头指针 */
 {   
+    
     Book *p=h.list->next;
     int interval=7;  
     /*p指向第一个数据结点, 如果链表不带附加头结点则p=h;*/
     //打印表头
+    //printf("ID\tTitle\tAuthor\tyear\tcopies\n");
     printf("ID");
     for(int i=1;i<=interval;i++)printf(" ");
     printf("Title");
     for(int i=1;i<=h.title_longest+interval-5;i++)printf(" ");
     printf("Author");
-    for(int i=1;i<=h.authors_longest+interval-5;i++)printf(" ");
+    for(int i=1;i<=h.authors_longest+interval-6;i++)printf(" ");
     printf("year");
     for(int i=1;i<=interval;i++)printf(" ");
     printf("copies\n");
 
     while(p) 
     { 
+        
         int tl=strlen(p->title);
         int al=strlen(p->authors);
-
+        
+        //printf("%d\t%s\t%s\t%d\t%d\n",p->id,p->title,p->authors,p->year,p->copies);
         printf("%d",p->id);//这里只考虑了id小于10--
         for(int i=1;i<=interval+1;i++)printf(" ");
         printf("%s",p->title);
         for(int i=1;i<=h.title_longest+interval-tl;i++)printf(" ");
         printf("%s",p->authors);
-        for(int i=1;i<=h.authors_longest+interval-tl;i++)printf(" ");
+        for(int i=1;i<=h.authors_longest+interval-al;i++)printf(" ");
         printf("%d",p->year);
         for(int i=1;i<=interval;i++)printf(" ");
         printf("%d\n",p->copies);
 
         p=p->next; 
     }
+    return;
 } 
 /*delet one book*/
 void deletbook(Book *h)     /* h为头指针 */

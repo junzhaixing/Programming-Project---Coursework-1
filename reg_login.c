@@ -4,7 +4,7 @@
 
 #include <book_management.h>
 
-void reg(UserList ul)
+void reg(UserList* ul)
 {
     char name[80],password[80];
     printf("Please enter a username: ");
@@ -12,9 +12,9 @@ void reg(UserList ul)
     printf("Please enter a password: ");
     fgets(password,80,stdin);
     int judge=1;
-    User *p=ul.list->next;
+    User *p=ul->list->next;
     //find if the name is avaible
-    for(int i=1;i<=ul.length;i++)
+    for(int i=1;i<=ul->length;i++)
     {
         if(p->username==name)
         {
@@ -37,7 +37,7 @@ void reg(UserList ul)
     return;
 }
 
-Userjudge login(UserList ul)
+Userjudge login(UserList* ul)
 {
     char name[80],password[80];
     printf("Please enter your username: ");
@@ -45,9 +45,9 @@ Userjudge login(UserList ul)
     printf("Please enter your password: ");
     fgets(password,80,stdin);
     int judge=0;
-    User *p=ul.list->next;
+    User *p=ul->list->next;
     //find if the user is exist
-    for(int i=1;i<=ul.length;i++)
+    for(int i=1;i<=ul->length;i++)
     {
         if(p->username==name)
         {

@@ -21,42 +21,28 @@
 // bookfile - name of book file
 // theLibrary - library data structure
 
-void initLibrary( char *bookFile, BookList *all_book ) {
+void initLibrary( BookList *all_book, UserList *all_user) {
 
-
-
-  // TO DO :
-  
-  // dynamically allocate the bookList array for storing books
-  theLibrary->bookList = (Book *)malloc( sizeof(Book)*(theLibrary->maxBooks) );
-  // check the book file exists 
+  char* bookFile="book.txt";
   FILE *fp = NULL;
   fp = fopen(bookFile, "r");
-  if(fp==NULL)
-  {
-  // use the error message and exit the program if it does not
-    printf("Error\nBook file does not exist: %s\n",bookFile);
-    exit(0);
-  }
-  else
-  {
-  // open it if it exists
+  int bookFile_error=load_books(fp, all_book);
+  fclose(fp);
+  if(bookFile_error==-2)
+  printf("Error loading book file");
 
-  // use the readBooks function to read in the file and add the book records into the bookList array
-    theLibrary->numBooks = readBooks( fp, theLibrary->bookList );
-  // remember to close the file
-    fclose(fp);
-  // Initialise the User data
-    for(int i=0; i<theLibrary->maxBorrowed; i++)
-    {
-        //theLibrary->theUser.borrowed[i]=( Book *)malloc( sizeof(Book) );
-        //theLibrary->theUser.borrowed[i]->available=0;
-        theLibrary->theUser.borrowed[i]=NULL;
-    }
-    //theLibrary->theUser.numBorrowed = 0;
+  char* userFile="user.txt";
+  fp = NULL;
+  fp = fopen(userFile, "r");
+  int userFile_error=load_users(fp, all_user);
+  fclose(fp);
+  if(userFile_error==-2)
+  printf("Error loading user file");
 
   
-  }
+  //printf("Error\nBook file does not exist: %s\n",bookFile);
+  //exit(0);
+  
   return;
 }
 
@@ -71,52 +57,7 @@ void initLibrary( char *bookFile, BookList *all_book ) {
 // Output:
 //   numBooks - number of books read
 
-int readBooks( FILE *books, Book *bookList ) {
 
-  int numBooks = 0;
-
-  // TO DO:
-
-  char line[80];
-  //(fgets(line,80,books)) != NULL
-
-  //(read = getline(&str,&len,books)) != -1
-  //str[read-1]='\0';
-
-  //size_t len = 0;
-  //char *str = NULL;
-  //ssize_t read;
-
-  int readnumber=0;
-  int book,choicetodo;
-  // read from the book file pointer
-  while((fgets(line,80,books)) != NULL)
-  {
-      book=readnumber/3;
-      choicetodo=readnumber%3;
-      removeNewLine(line); //去掉行末换行符
-      if(choicetodo==0)
-      {
-          strcpy(&bookList[book].author[0],line);
-          bookList[book].available=1;
-          //printf("%s",bookList[book].title);
-      }
-      else if(choicetodo==1)
-      {
-          strcpy(&bookList[book].title[0],line);
-          //printf("%s",bookList[book].author);
-      }
-      //fprintf(stdout,"%s",str);
-      
-      readnumber++;
-  }
-  numBooks=readnumber/3;
-  // assign values to a Book structure in the bookList array for each complete record
-  
-  // read data until the file ends
-  
-  return numBooks;
-}
 
 // Free any allocated library data
 // Input: 
@@ -140,24 +81,25 @@ void exitLibrary( BookList *all_book ) {
 // DO NOT ALTER THIS FUNCTION
 // Library menu system
 
-void libraryCLI( char *bookFile ) {
+void libraryCLI( ) {
     int libraryOpen = 1;
     int option;
 
     // create the library structure 
     BookList *all_book = (BookList *)malloc( sizeof(BookList) );
+    UserList *all_user = (UserList *)malloc( sizeof(UserList) );
 
-    initLibrary( bookFile, all_book );
+    initLibrary( bookFile, all_book, all_user );
    
     while( libraryOpen ){
         printf("\nPlease choose an option\n1) Register\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
         option = optionChoice();
 
         if( option == 1 ) {
-            reg( theuser );//user list还未设置
+            reg( all_user );//user list设置
         }
         else if( option == 2 ) {
-            Userjudge k=login(theuser);//user list还未设置
+            Userjudge k=login( all_user );//user list还未设置
             if(k.judge==1)
                 UserCLI( k.username, all_book );
             else if(k.judge==2)
@@ -183,6 +125,7 @@ void libraryCLI( char *bookFile ) {
 
     // free the library structure
     free( all_book );
+    free( all_user );
 
     return;
 }

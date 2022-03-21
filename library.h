@@ -1,8 +1,8 @@
 
-void libraryCLI( char *bookFile );
+void libraryCLI( );
 
-void initLibrary( char *bookFile, BookList *all_book );
-int readBooks( FILE *books, Book *bookList );
+void initLibrary( BookList *all_book, UserList *all_user );
+
 
 void exitLibrary( BookList *all_book );
 
