@@ -21,10 +21,9 @@
 // bookfile - name of book file
 // theLibrary - library data structure
 
-void initLibrary( char *bookFile, Library *theLibrary ) {
+void initLibrary( char *bookFile, BookList *all_book ) {
 
-  theLibrary->maxBooks = 12;
-  theLibrary->maxBorrowed = 4;
+
 
   // TO DO :
   
@@ -123,13 +122,18 @@ int readBooks( FILE *books, Book *bookList ) {
 // Input: 
 // theLibrary - library data structure
 
-void exitLibrary( Library *theLibrary ) {
+void exitLibrary( BookList *all_book ) {
 
   // TO DO:
 
   // free the allocated lists
-  free(theLibrary->bookList);
-  
+  Book *p=all_book->list,*q;
+    while(p!=NULL)       /* p没有指向链表尾则循环 */
+    { q=p;                                 /* 保存p */ 
+        p=p->next;                      /* p向前推进一个结点 */
+        DeleteNode(q);               /* 删除结点*q */
+    }
+    
   return;
 }
 
@@ -141,9 +145,9 @@ void libraryCLI( char *bookFile ) {
     int option;
 
     // create the library structure 
-    Library *theLibrary = (Library *)malloc( sizeof(Library) );
+    BookList *all_book = (BookList *)malloc( sizeof(BookList) );
 
-    initLibrary( bookFile, theLibrary );
+    initLibrary( bookFile, all_book );
    
     while( libraryOpen ){
         printf("\nPlease choose an option\n1) Register\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
@@ -155,9 +159,9 @@ void libraryCLI( char *bookFile ) {
         else if( option == 2 ) {
             Userjudge k=login(theuser);//user list还未设置
             if(k.judge==1)
-                UserCLI( k.username, theLibrary );
+                UserCLI( k.username, all_book );
             else if(k.judge==2)
-                librarianCLI(theLibrary);
+                librarianCLI(all_book);
         }
         else if( option == 3 ) {
             //search for book
@@ -175,10 +179,10 @@ void libraryCLI( char *bookFile ) {
             printf("\nSorry,the option you entered was invalid, please try again.\n");
     }
 
-    exitLibrary( theLibrary );
+    exitLibrary( all_book );
 
     // free the library structure
-    free( theLibrary );
+    free( all_book );
 
     return;
 }

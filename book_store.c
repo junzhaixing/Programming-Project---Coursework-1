@@ -24,6 +24,14 @@ BookList* lookbook()
     return k;
 } 
 
+/*add new poit to list*/
+Book addbook(Book *h)      /* h 传入单链表头结点指针*/
+{  
+    Book *p=h->next;
+    h->next=p->next;
+    DeleteNode(p);
+}
+
 /*delet the linked list*/
 Book deletallbook(Book *h)      /* h 传入单链表头结点指针*/
 {  
@@ -47,7 +55,7 @@ void printbook(BookList h)     /* h为头指针 */
     printf("Title");
     for(int i=1;i<=h.title_longest+interval-5;i++)printf(" ");
     printf("Author");
-    for(int i=1;i<=h.author_longest+interval-5;i++)printf(" ");
+    for(int i=1;i<=h.authors_longest+interval-5;i++)printf(" ");
     printf("year");
     for(int i=1;i<=interval;i++)printf(" ");
     printf("copies\n");

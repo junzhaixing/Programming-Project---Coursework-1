@@ -187,7 +187,7 @@ void returnBook( User *theUser, Book *bookList, int numBooks, int maxBorrowed ) 
 
 // Menu system for library user
 
-void userCLI( char *name, Library *theLibrary ) {
+void userCLI( char *name, BookList *all_book ) {
     int userLoggedIn = 1;
     int option;
 
@@ -226,7 +226,7 @@ void userCLI( char *name, Library *theLibrary ) {
 
 // Menu system for the librarian
 
-void librarianCLI( Library *theLibrary ) {
+void librarianCLI( BookList *all_book ) {
     int librarianLoggedIn = 1;
     int option;
 
@@ -293,7 +293,12 @@ void SearchBook( Book *bookList, int numBooks )//--
             int year;
             printf("Please enter the author:");
             year = optionChoice();
-            BookList k=find_book_by_year (year);
+            if(year==0)
+               printf("Sorry,the year you entered was invalid, please try again.\n");
+            else 
+            {
+               BookList k=find_book_by_year (year);
+            }
         }
         else if( option == 4 ) {//退出--
             SearchIn = 0;
