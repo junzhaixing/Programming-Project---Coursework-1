@@ -4,6 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+void removeNewLine(char* string) {
+
+    size_t length = strlen(string);
+
+    if((length > 0) && (string[length-1] == '\n')) {
+        string[length-1] ='\0';
+    }
+    return;
+}
 
 
 //saves the database of books in the specified file
@@ -19,33 +28,50 @@ int store_books(FILE *file){
 int load_books(FILE *file, BookList *all_book){
 
     int x=1;
-    Book *first=all_book->list,*p,*last;
+    Book *first,*last;
     CreateNode(first);     /* 建立附加头结点 */
+    all_book->list = first;
     last=first;          /* last始终指向当前最后一个结点 */
-    printf("5\n");
     
-    char* l_title=(char*)malloc(sizeof(char)*80);
-    char* l_authors=(char*)malloc(sizeof(char)*80);
-    unsigned int l_id,l_year,l_copies;
-
-    while((fscanf(file, "%u\t%s\t%s\t%u\t%u\n", l_id,l_title, l_authors,l_year,l_copies)) != EOF)
+    
+    char line[100];
+    
+    int hang;
+    
+    while((fgets(line,100,file)) != NULL)
     { 
-        
-        //if (feof(file)) break;
+        removeNewLine(line);
+        Book *p;
         CreateNode(p);
-        p->id=l_id;
-        p->title=l_title;
-        p->authors=l_authors;
-        p->year=l_year;
-        p->copies=l_copies;
-        printf("7\n");
+        //const char s[2] = "-";
+        char* fenduan;
+        fenduan=strtok(line, "-");
+        p->id=(int)atoi(fenduan);
+
+        fenduan=strtok(NULL, "-");
+        p->title=(char*)malloc(sizeof(char)*80);
+        //printf("%s\n",fenduan);
+        strcpy(p->title,fenduan);
+
+        fenduan=strtok(NULL, "-");
+        p->authors=(char*)malloc(sizeof(char)*80);
+        //printf("%s\n",fenduan);
+        strcpy(p->authors,fenduan);
+
+        fenduan=strtok(NULL, "-");
+        p->year=(int)atoi(fenduan);
         
-           /* 建立一个新结点 */
+        fenduan=strtok(NULL, "-");
+        p->copies=(int)atoi(fenduan);
+        
+        //printf("%d\t%s\t\t%s\t%d\t%d\n",p->id,p->title,p->authors,p->year,p->copies);
+        
         last->next=p;last=p; /*新结点插入到链表结尾*/
         x++;        
     }
-    printf("6");
+    
     last->next=NULL;        /*最后一个结点指针域赋值为NULL*/
+    all_book->length=x;
     //BookList *k;
     //k=(BookList*)malloc(sizeof(BookList));
     //k->list=first;
@@ -98,7 +124,8 @@ void printbook(BookList h)     /* h为头指针 */
     int interval=7;  
     /*p指向第一个数据结点, 如果链表不带附加头结点则p=h;*/
     //打印表头
-    printf("ID");
+    printf("ID\tTitle\tAuthor\tyear\tcopies\n");
+    /*printf("ID");
     for(int i=1;i<=interval;i++)printf(" ");
     printf("Title");
     for(int i=1;i<=h.title_longest+interval-5;i++)printf(" ");
@@ -106,14 +133,16 @@ void printbook(BookList h)     /* h为头指针 */
     for(int i=1;i<=h.authors_longest+interval-5;i++)printf(" ");
     printf("year");
     for(int i=1;i<=interval;i++)printf(" ");
-    printf("copies\n");
+    printf("copies\n");*/
 
     while(p) 
     { 
+        
         int tl=strlen(p->title);
         int al=strlen(p->authors);
-
-        printf("%d",p->id);//这里只考虑了id小于10--
+        
+        printf("%d\t%s\t%s\t%d\t%d\n",p->id,p->title,p->authors,p->year,p->copies);
+        /*printf("%d",p->id);//这里只考虑了id小于10--
         for(int i=1;i<=interval+1;i++)printf(" ");
         printf("%s",p->title);
         for(int i=1;i<=h.title_longest+interval-tl;i++)printf(" ");
@@ -121,10 +150,11 @@ void printbook(BookList h)     /* h为头指针 */
         for(int i=1;i<=h.authors_longest+interval-tl;i++)printf(" ");
         printf("%d",p->year);
         for(int i=1;i<=interval;i++)printf(" ");
-        printf("%d\n",p->copies);
+        printf("%d\n",p->copies);*/
 
         p=p->next; 
     }
+    return;
 } 
 
 int main(){
@@ -143,10 +173,8 @@ int main(){
     char* bookFile="book.txt";
     
     BookList *all_book = (BookList *)malloc( sizeof(BookList) );
-    
     FILE *fp = NULL;
     fp = fopen(bookFile, "r");
-    
     if(fp==NULL)
     {
     // use the error message and exit the program if it does not
@@ -155,15 +183,12 @@ int main(){
     }
     else
     {
-    // open it if it exists
-    printf("2\n");
-    // use the readBooks function to read in the file and add the book records into the bookList array
     load_books(fp, all_book);
-    printf("3\n");
-    // remember to close the file
     fclose(fp);
-    // Initialise the User data
+    
     }
+    
     printbook(*all_book);
+    free(all_book);
     return 0;
 }

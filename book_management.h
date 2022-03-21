@@ -28,8 +28,8 @@ typedef struct _BookList {
 	unsigned int length; // number of elements in the (Book*) List 
 
 	 //for printf排版整齐
-	int title_longest;//record longest length of title
-	int authors_longest;//record longest author of title
+	//int title_longest;//record longest length of title
+	//int authors_longest;//record longest author of title
 }BookList;
 
 typedef struct _User {
