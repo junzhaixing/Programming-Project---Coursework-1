@@ -14,9 +14,27 @@ void removeNewLine(char* string) {
     return;
 }
 
+void first_book_get(BookList *p){
+    //最长值初始化
+    p->authors_longest=0;
+    p->title_longest=0;
+    p->length=1;
+    //头节点虚拟初始化
+    p->list->id=10000;
+    
+    p->list->title="xuni";
+    //strcpy(p->title,book.title);
+    
+    p->list->authors="xuni";
+    //strcpy(p->authors,book.authors);
+    
+    p->list->year=0000;
+    p->list->copies=0;
+}
+
 //saves the database of books in the specified file
 //returns 0 if books were stored correctly, or an error code otherwise
-int store_books(FILE *file){
+int store_books(FILE *file,BookList *all_book){
     
 
 }
@@ -34,8 +52,9 @@ int load_books(FILE *file, BookList *all_book){
     Book *first,*last;
     CreateNode(first);     /* 建立附加头结点 */
     all_book->list = first;
-    last=first;          /* last始终指向当前最后一个结点 */
+    first_book_get(all_book);
     
+    last=first;          /* last始终指向当前最后一个结点 */
     //最长值初始化
     all_book->authors_longest=0;
     all_book->title_longest=0;
@@ -71,9 +90,8 @@ int load_books(FILE *file, BookList *all_book){
         
         fenduan=strtok(NULL, "-");
         p->copies=(int)atoi(fenduan);
-        
+        //test
         //printf("%d\t%s\t\t%s\t%d\t%d\n",p->id,p->title,p->authors,p->year,p->copies);
-        
         /*新结点插入到链表结尾*/
         last->next=p;last=p; 
         x++;        
@@ -137,29 +155,111 @@ int load_users(FILE *file, UserList *all_user)
 }
 //adds a book to the ones available to the library
 //returns 0 if the book could be added, or an error code otherwise
-int add_book(Book book){
+int add_book(Book book,BookList *all_book){
+
+    Book *p,*last;
+    last=all_book->list;
+    CreateNode(p);
+    p->id=book.id;
+    
+    p->title=(char*)malloc(sizeof(char)*80);
+    strcpy(p->title,book.title);
+    int l_title=strlen(p->title);
+    if(l_title>all_book->title_longest) all_book->title_longest=l_title;
+    
+    p->authors=(char*)malloc(sizeof(char)*80);
+    strcpy(p->authors,book.authors);
+    int l_authors=strlen(p->authors);
+    if(l_authors>all_book->authors_longest) all_book->authors_longest=l_authors;
+
+    p->year=book.year;
+    p->copies=book.copies;
+
+    while(last->next){
+        last=last->next;
+    }
+    last->next=p;
+    p->next=NULL;
+    all_book->length++;
+
+
 
 }
 
 //removes a book from the library
 //returns 0 if the book could be successfully removed, or an error code otherwise.
-int remove_book(Book book){
-
+int remove_book(Book book,BookList *all_book){
+    //if (!all_book)
+		//load_books(all_book);
+    Book *p=all_book->list;
+    int judge=0;
+    while(p){
+        if (book.id==p->next->book_id)
+        {
+            Book *h=p->next;
+            p->next=h->next;
+            DeleteNode(h);
+            judge=1;
+            break;
+        }
+        p=p->next;
+    }
+    if(judge==1)return 1;
+    else return 0;
 }
 
 //finds books with a given title.
 //returns a BookList structure, where the field "list" is a list of books, or null if no book with the 
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
 //list is the NULL pointer.
-BookList find_book_by_title (const char *title){
+BookList find_book_by_title (const char *title,BookList *all_book){
+    //if (!all_book)
+		//load_books(all_book);
+    Book *p=all_book->list->next;
+    BookList *find_book = (BookList *)malloc( sizeof(BookList) );
 
+    int x=1;
+    Book *first;
+    CreateNode(first);     /* 建立附加头结点 */
+    find_book->list = first;
+    first_book_get(find_book);
+
+    while(p){
+        if (!strcmp(p->title,title))
+        {
+            add_book(*p,find_book);
+        }
+        p=p->next;
+    }
+
+	return *find_book;
 }
 
 //finds books with the given authors.
 //returns a Booklist structure, where the field "list" is a newly allocated list of books, or null if no book with the 
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
 //list is the NULL pointer.
-BookList find_book_by_author (const char *author){
+BookList find_book_by_author (const char *author,BookList *all_book){
+    //if (!all_book)
+		//load_books(all_book);
+    Book *p=all_book->list->next;
+    BookList *find_book = (BookList *)malloc( sizeof(BookList) );
+
+    int x=1;
+    Book *first;
+    CreateNode(first);     /* 建立附加头结点 */
+    find_book->list = first;
+    first_book_get(find_book);
+    
+    while(p){
+        if (!strcmp(p->authors,author))
+        {
+            add_book(*p,find_book);
+        }
+        p=p->next;
+    }
+
+	return *find_book;
 
 }
 
@@ -167,7 +267,27 @@ BookList find_book_by_author (const char *author){
 //returns a Booklist structure, where the field "list" is a list of books, or null if no book with the 
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
 //list is the NULL pointer.
-BookList find_book_by_year (unsigned int year){
+BookList find_book_by_year (unsigned int year,BookList *all_book){
+    //if (!all_book)
+		//load_books(all_book);
+    Book *p=all_book->list->next;
+    BookList *find_book = (BookList *)malloc( sizeof(BookList) );
+
+    int x=1;
+    Book *first;
+    CreateNode(first);     /* 建立附加头结点 */
+    find_book->list = first;
+    first_book_get(find_book);
+    
+    while(p){
+        if (p->year==year)
+        {
+            add_book(*p,find_book);
+        }
+        p=p->next;
+    }
+
+	return *find_book;
 
 }
 
@@ -245,6 +365,14 @@ int main(){
         fclose(fp);}
     
     printbook(*all_book);
+    //search 测试
+    //const char *title_test="Harry";
+    //const char *author_test="asdff";
+    //unsigned int year_test=1997;
+    //printbook(find_book_by_title (title_test,all_book));
+    //printbook(find_book_by_author (author_test,all_book));
+    //printbook(find_book_by_year (year_test,all_book));
+    //user 测试
     //printf("%s\t\t%s\n",all_user->list->next->username,all_user->list->next->password);
     free(all_book);
     //free( all_user );
