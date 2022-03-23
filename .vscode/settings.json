@@ -3,6 +3,7 @@
         "stdio.h": "c",
         "book_management.h": "c",
         "string.h": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "typeinfo": "c"
     }
 }

@@ -32,11 +32,27 @@ typedef struct _BookList {
 	int authors_longest;//record longest author of title
 }BookList;
 
+/*
+typedef struct _Loans {
+	    
+	unsigned int id;
+	struct _Loans *next;
+
+}Loan;
+
+typedef struct _LoanList {
+	 Loan* list; // pointer to a list of struct loan.
+	 unsigned int length; // number of elements in the (loan*) List 
+}LoanList;
+*/
+
 typedef struct _User {
 	    
 		char *username; //username
 		char *password; //user password
 		struct _User *next;
+		//LoanList *loans; 
+		BookList *loans;//pointer to a list of loan book.
 
 		//Book *borrowed[4];//--要改
         //int numBorrowed;
@@ -47,11 +63,6 @@ typedef struct _UserList {
 	 unsigned int length; // number of elements in the (user*) List 
 }UserList;
 
-typedef struct _Userjudge {//for change the admin and user part
-	    
-		char *username; //username
-		int judge; //judge the id
-}Userjudge;
 
 void first_book_get(BookList *p);
 
@@ -66,7 +77,13 @@ int load_books(FILE *file, BookList *all_book);
 
 int load_users(FILE *file, UserList *all_user);
 
-int load_loans(FILE *file, UserList *all_loan);
+int load_loans(FILE *file, UserList *all_user);
+
+int add_loans(int id, User* user,BookList *all_book);
+
+int remove_loans(int id, User* user,BookList *all_book);
+
+int add_user(User user,UserList *all_user);
 
 //adds a book to the ones available to the library
 //returns 0 if the book could be added, or an error code otherwise
@@ -93,6 +110,8 @@ BookList find_book_by_author (const char *author,BookList *all_book);
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
 //list is the NULL pointer.
 BookList find_book_by_year (unsigned int year,BookList *all_book);
+
+void printbook(BookList h);
 
 
 

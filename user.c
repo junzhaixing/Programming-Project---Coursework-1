@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "libraryStructures.h"
+
 #include "user.h"
 #include "utility.h"
 
@@ -10,103 +10,6 @@
 // Code module for the library user
 // They can look for available books,
 // borrow and return books
-
-
-
-// Borrow a book 
-// Input
-// theUser - user data structure
-// bookList - the array of Book structures
-// numBooks - the number of books
-// maxBorrowed - max books we can borrow
-
-void borrowBook( User *theUser, Book *bookList, int numBooks, int maxBorrowed ) {
-
-  // TO DO :  
-  int borrow_booknumber;
-  // For any error message you should return to the menu
-  //char borrowline[80];
-  // check that the user can borrow a book
-  if( theUser->numBorrowed>=4 )
-  {
-      printf("You have to return a book before you can borrow another\n");
-      return;
-  }
-    
-
-  // request the choice of book 
-  printf("Which book? (number):");
-  borrow_booknumber=optionChoice();
-  
-  int errorjudge=0,showerror=1;
-  if(borrow_booknumber>=0 && borrow_booknumber<numBooks )
-  {
-      
-    errorjudge=1;
-        if(bookList[borrow_booknumber].available==1)
-        {
-              for(int j=0; j<maxBorrowed; j++)
-                {
-                    if(theUser->borrowed[j]==NULL)
-                    {
-                        //printf("1\n");
-                        //strcpy(theUser->borrowed[j]->author,bookList[borrow_booknumber].author);
-                        //strcpy(theUser->borrowed[j]->title,bookList[borrow_booknumber].title);
-                        //printf("2\n");
-                        Book* borrowedl = &bookList[borrow_booknumber];
-                        theUser->borrowed[j] = borrowedl;
-                        theUser->borrowed[j]->available=0;
-                        theUser->numBorrowed++;
-                        showerror=0;
-                        break;
-                    }
-                            
-                }
-              //bookList[i].available=0;
-              
-        }
-          
-      
-      
-  }
-  if(showerror==1)
-  {
-       if(errorjudge==1)printf("Book is not available\n");
-       else if(errorjudge==0)printf("Error\nInvalid choice\n");
-  }
-  //listMyBooks( theUser, bookList, maxBorrowed ); 
-  // check that the choice is valid 
-  // error messages
-  //printf("Error\nInvalid choice\n");
-  //printf("Book is not available\n");
-  
-  // borrow the book, update the data structures
-
-  return; 
-}
-
-// List books I have borrowed 
-// Input
-// theUser - user data structure
-// bookList - the array of Book structures
-// maxBorrowed - max books we can borrow
-
-void listMyBooks( User *theUser, Book *bookList, int maxBorrowed ) {
-
-  // TO DO :  
-  int shownumber=0;
-  // list my books in format "number - author - title"
-  for(int i=0; i<maxBorrowed; i++)
-  {
-      if(theUser->borrowed[i]!=NULL)
-      {
-          printf("%d - %s - %s\n",shownumber,theUser->borrowed[i]->author,theUser->borrowed[i]->title);
-          shownumber++;
-      }
-            
-  }
-  return;
-}
 
 // Return a book 
 // Input
@@ -187,32 +90,39 @@ void returnBook( User *theUser, Book *bookList, int numBooks, int maxBorrowed ) 
 
 // Menu system for library user
 
-void userCLI( char *name, BookList *all_book ) {
+void userCLI( User* user, BookList *all_book ) {
     int userLoggedIn = 1;
     int option;
 
     while( userLoggedIn ){
-        printf("\n(logged in as: %s)\n",name);
+        printf("\n(logged in as: %s)\n",user->username);
         printf("Please choose an option:\n");
         printf("1) Borrow a book\n 2) Return a book\n3) Search for book\n4) Display all books\n5) Log out\n Option: ");
         option = optionChoice();
 
         if( option == 1 ) {//借书
-            printf("\nList available books:\n");
-            listAvailableBooks( theLibrary->bookList, theLibrary->numBooks );
+            int L=input_add_loan(user, all_book);
+            if( L != 0 ){
+                int success=add_loans(L, user, all_book);
+                if( success == 0)   
+                    printf("Book was successfully loaned!\n");
+            }
+    
         }
         else if( option == 2 ) {//还书
-            printf("\nBorrow book from library:\n");
-            listAvailableBooks( theLibrary->bookList, theLibrary->numBooks );
-            borrowBook( &(theLibrary->theUser), theLibrary->bookList, theLibrary->numBooks, theLibrary->maxBorrowed );
+            int L=input_remove_loan(user, all_book);
+            if( L != 0 ){
+                int success=remove_loans(L, user, all_book);
+                if( success == 0)   
+                    printf("Returned book successfully!\n");
+            }
         }
         else if( option == 3 ) {//查找书--
-            SearchBook( bookList, numBooks );
+            SearchBook( all_book );
             
         }
         else if( option == 4 ) {//展示书--
-            userLoggedIn = 0;
-            printf("\nLogging out\n");
+            printbook(*all_book);
         }
         else if( option == 5 ) {
             userLoggedIn = 0;
@@ -238,19 +148,23 @@ void librarianCLI( BookList *all_book ) {
 
         if( option == 1 ) {
             printf("\nadd a book\n");//tianjiashu,--
-            
+            int success=add_book((input_add_book(all_book)),all_book);
+            if( success == 0)   
+            printf("Book was successfully added!\n"); 
         }
         else if( option == 2 ) {//移除书--
             printf("\nList of borrowed books:\n");
-            listBorrowedBooks( theLibrary->bookList, theLibrary->numBooks );
+            int success=remove_book((input_remove_book(all_book)),all_book);
+            if( success == 0)   
+            printf("Book was successfully removed!\n");
+            
         }
         else if( option == 3 ) {//查找书--
             
-            SearchBook( bookList, numBooks );
+            SearchBook( all_book );
         }
         else if( option == 4 ) {//展示书--
-            librarianLoggedIn = 0;
-            printf("\nLogging out\n");
+            printbook(*all_book);
         }
         else if( option == 5 ) {
             librarianLoggedIn = 0;
@@ -263,7 +177,7 @@ void librarianCLI( BookList *all_book ) {
 }
 
 
-void SearchBook( Book *bookList, int numBooks )//--
+void SearchBook( BookList *all_book )//--
 {
     int SearchIn=1;
     int option;
@@ -279,14 +193,15 @@ void SearchBook( Book *bookList, int numBooks )//--
             char title[80];
             printf("Please enter the title:");
             fgets(title,80,stdin);
-            BookList k=find_book_by_title (title);
-
+            BookList k=find_book_by_title (title,all_book);
+            printbook(k);
         }
         else if( option == 2 ) {//按作者--
             char author[80];
             printf("Please enter the author:");
             fgets(author,80,stdin);
-            BookList k=find_book_by_author (author);
+            BookList k=find_book_by_author (author,all_book);
+            printbook(k);
             
         }
         else if( option == 3 ) {//按年--
@@ -297,7 +212,8 @@ void SearchBook( Book *bookList, int numBooks )//--
                printf("Sorry,the year you entered was invalid, please try again.\n");
             else 
             {
-               BookList k=find_book_by_year (year);
+               BookList k=find_book_by_year (year,all_book);
+               printbook(k);
             }
         }
         else if( option == 4 ) {//退出--
@@ -309,14 +225,112 @@ void SearchBook( Book *bookList, int numBooks )//--
       }
 }
 
-void listBooks( Book *bookList, int numBooks ) {
+int input_add_loan(User* user,BookList*all_book){
+    int l_id;
+    printf("Enter the id of the book you wish to loan: \n");
+    l_id=optionChoice();
+    if(l_id==0){
+    printf("Sorry,the id you entered was invalid, please try again.\n");
+    return 0;}
+    Book* k=all_book->list->next;
+    int h_i=0;
+    while(k)
+    {
+        if(k->id==l_id){
+            h_i=1;
+            break;
+        }
+        k=k->next;
+    }
+    if(h_i==0){
+        printf("Sorry, the id you enterd don't exsist.\n");
+        return 0;
+    }
+    Book* p=user->loans->list->next;
+    while(p)
+    {
+        if(p->id==l_id){
+            printf("Sorry,you already have a copy of this book on loan")
+            return 0;
+        }
+        p=p->next;
 
-  // TO DO :
-  //
-  // list the books in format "name - title"
-  for(int i=0; i<numBooks; i++)
-  {
-      printf("%s - %s\n",bookList[i].author,bookList[i].title);
-  }
-  return;
+    }
+    return l_id;
+}
+
+int input_remove_loan(User* user,BookList*all_book){
+    int l_id;
+    printf("Below the list of book you are currently borrowing: \n");
+    printbook(*all_book);
+
+    printf("Enter the ID number of the book you wish to return: \n");
+    l_id=optionChoice();
+    if(l_id==0){
+    printf("Sorry,the id you entered was invalid, please try again.\n");
+    return 0;}
+    Book* k=user->loans->list->next;
+    int h_i=0;
+    while(k)
+    {
+        if(k->id==l_id){
+            h_i=1;
+            break;
+        }
+        k=k->next;
+    }
+    if(h_i==0){
+        printf("Sorry,you don't have the copy of this book!\n");
+        return 0;
+    }
+    if(k->copies==0){
+        printf("Sorry,the copy of this book is none!\n");
+        return 0;
+    }
+    return l_id;
+}
+
+Book input_remove_book(BookList *all_book){
+    Book remove;
+
+    printf("Enter the id of the book you wish to remove: \n");
+    remove.id = optionChoice();
+    if(year==0)printf("Sorry,the id you entered was invalid, please try again.\n");
+    remove.title="meiyong";
+    remove.authors="meiyong";
+    remove.year=1;
+    remove.copies=1;
+    remove.next=NULL;
+
+    return remove;
+
+}
+
+Book input_add_book(BookList *all_book){
+
+    Book input;
+
+    input.title=(char*)malloc(sizeof(char)*80);
+    printf("Enter the title of the book you wish to add: \n");
+    fgets(input.title,80,stdin);
+    if(input.title=="")
+    printf("Sorry,the title can't be empty, please try again.\n");
+    
+    input.authors=(char*)malloc(sizeof(char)*80);
+    printf("Enter the author of the book you wish to add: \n");
+    fgets(input.authors,80,stdin);
+    if(input.authors=="")
+    printf("Sorry,the author can't be empty, please try again.\n");
+
+    printf("Enter the year of the book you wish to add was released: \n");
+    input.year = optionChoice();
+    if(year==0)printf("Sorry,the year you entered was invalid, please try again.\n");
+    
+    printf("Enter the number of copies of the book that you wish to add: \n");
+    input.copies = optionChoice();
+
+    input.next=NULL;
+    input.id=all_book->length;//有问题，关于id
+
+    return input;
 }

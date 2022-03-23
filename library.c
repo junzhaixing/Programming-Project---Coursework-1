@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libraryStructures.h"
+
 #include "library.h"
 #include "user.h"
 #include "librarian.h"
@@ -99,19 +99,22 @@ void libraryCLI( ) {
             reg( all_user );//user list设置
         }
         else if( option == 2 ) {
-            Userjudge k=login( all_user );//user list还未设置
-            if(k.judge==1)
-                UserCLI( k.username, all_book );
-            else if(k.judge==2)
-                librarianCLI(all_book);
+            User* k=login( all_user );//user list还未设置
+            if(k!=NULL)
+            {
+                if(k->username=="librarian"||k->password="librarian")
+                    librarianCLI(all_book);
+                else UserCLI( k, all_book );
+            }
+      
         }
         else if( option == 3 ) {
             //search for book
-            printf("\nbook\n");
+            SearchBook( all_book );
         }
         else if( option == 4 ) {
             //zhanshiliebiaohanshu
-            printf("\nall book is\n");
+            printbook(*all_book);
         }
         else if( option == 5 ) {
             libraryOpen = 0;
