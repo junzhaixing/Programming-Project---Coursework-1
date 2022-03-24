@@ -39,43 +39,39 @@ void initLibrary( BookList *all_book, UserList *all_user) {
   if(userFile_error==-2)
   printf("Error loading user file");
 
-  
+  char* loanFile="loans.txt";
+  fp = NULL;
+  fp = fopen(loanFile, "r");
+  int loanFile_error=load_loans(fp, all_user, all_book);
+  fclose(fp);
+  if(loanFile_error==-2)
+  printf("Error loading loan file");
   //printf("Error\nBook file does not exist: %s\n",bookFile);
   //exit(0);
   
   return;
 }
 
-// Read in book file and create the books data structure
-// the book file is in a fixed format:
-// * book author
-// * book title
-// * blank line
-// Input:
-//   books - file pointer to text input file
-//   bookList - alocated array for storing Book structures
-// Output:
-//   numBooks - number of books read
-
-
 
 // Free any allocated library data
 // Input: 
 // theLibrary - library data structure
 
-void exitLibrary( BookList *all_book ) {
-
-  // TO DO:
+void exitLibrary( BookList *all_book, UserList *all_user) {
 
   // free the allocated lists
-  Book *p=all_book->list,*q;
-    while(p!=NULL)       /* p没有指向链表尾则循环 */
-    { q=p;                                 /* 保存p */ 
-        p=p->next;                      /* p向前推进一个结点 */
-        DeleteNode(q);               /* 删除结点*q */
+    delete_book(all_book);
+    User *p=all_user->list,q;
+    while(p)       /* p没有指向链表尾则循环 */
+    {   
+        free(p->username);
+        free(p->password);
+        delete_book(p->loans);
+        q=p;                        /* 保存p */ 
+        p=p->next;           /* p向前推进一个结点 */
+        DeleteNode(q);             /* 删除结点*q */
     }
-    
-  return;
+    return;
 }
 
 // DO NOT ALTER THIS FUNCTION
@@ -123,13 +119,11 @@ void libraryCLI( ) {
         else
             printf("\nSorry,the option you entered was invalid, please try again.\n");
     }
-
-    exitLibrary( all_book );
-
+    
     // free the library structure
+    exitLibrary( all_book, all_user);
     free( all_book );
     free( all_user );
-
     return;
 }
 
