@@ -5,7 +5,6 @@
 
 #include "library.h"
 #include "user.h"
-#include "librarian.h"
 #include "utility.h"
 
 
@@ -21,7 +20,7 @@
 // bookfile - name of book file
 // theLibrary - library data structure
 
-void initLibrary( BookList *all_book, UserList *all_user) {
+void initLibrary( BookList *all_book, UserList *all_user){
 
   char* bookFile="book.txt";
   FILE *fp = NULL;
@@ -59,14 +58,20 @@ void initLibrary( BookList *all_book, UserList *all_user) {
 
 void exitLibrary( BookList *all_book, UserList *all_user) {
 
-  // free the allocated lists
+    
+    
+    
+    
+    
+    // free the allocated lists
     delete_book(all_book);
-    User *p=all_user->list,q;
+    User *p=all_user->list,*q;
     while(p)       /* p没有指向链表尾则循环 */
     {   
         free(p->username);
         free(p->password);
         delete_book(p->loans);
+        free(p->loans);
         q=p;                        /* 保存p */ 
         p=p->next;           /* p向前推进一个结点 */
         DeleteNode(q);             /* 删除结点*q */
@@ -77,7 +82,7 @@ void exitLibrary( BookList *all_book, UserList *all_user) {
 // DO NOT ALTER THIS FUNCTION
 // Library menu system
 
-void libraryCLI( ) {
+void libraryCLI(){
     int libraryOpen = 1;
     int option;
 
@@ -85,7 +90,7 @@ void libraryCLI( ) {
     BookList *all_book = (BookList *)malloc( sizeof(BookList) );
     UserList *all_user = (UserList *)malloc( sizeof(UserList) );
 
-    initLibrary( bookFile, all_book, all_user );
+    initLibrary( all_book, all_user );
    
     while( libraryOpen ){
         printf("\nPlease choose an option\n1) Register\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
@@ -98,9 +103,9 @@ void libraryCLI( ) {
             User* k=login( all_user );//user list还未设置
             if(k!=NULL)
             {
-                if(k->username=="librarian"||k->password="librarian")
-                    librarianCLI(all_book);
-                else UserCLI( k, all_book );
+                if(!strcmp(k->username,"librarian")&&!strcmp(k->password,"librarian"))
+                    librarianCLI(all_book, all_user);
+                else userCLI( k, all_book );
             }
       
         }

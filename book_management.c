@@ -13,7 +13,18 @@ void removeNewLine(char* string) {
     }
     return;
 }
+int optionChoice( void ) {
+    int option = -1;
+    char line[80];
 
+    // read in the current line as a string
+    fgets(line,80,stdin);
+
+    // atoi() converts string to integer, returns 0 if could not convert
+    option = (int)atoi(line);
+
+    return option;
+}
 void first_book_get(BookList *p){
     //最长值初始化
     p->authors_longest=0;
@@ -37,17 +48,44 @@ void first_book_get(BookList *p){
 //saves the database of books in the specified file
 //returns 0 if books were stored correctly, or an error code otherwise
 int store_books(FILE *file,BookList *all_book){
+    Book *last;
+    last=all_book->list->next;
     
+    while(last){
 
+        fprintf(file,"%d-%s-%s-%d-%d\n", last->id,last->title,last->authors,last->year,last->copies);
+        last=last->next;
+    }
+    return 0;
 }
 
 int store_users(FILE *file,UserList *all_user){
+    User *last;
+    last=all_user->list->next;
+
+    while(last){
+        fprintf(file,"%s-%s\n", last->username,last->password);
+        last=last->next;
+    }
     
 
 }
 
 int store_loans(FILE *file,UserList *all_user){
-    
+    User *last;
+    last=all_user->list->next;
+
+    while(last){
+        fprintf(file,"%s-", last->username);
+        Book *p;
+        p=last->loans->list->next;
+        while(p){
+            fprintf(file,"%d", p->id);
+            p=p->next;
+        }
+        fprintf(file,"\n");
+        last=last->next;
+    }
 
 }
 
@@ -227,13 +265,29 @@ int add_loans(int id, User* user,BookList *all_book){
 int remove_loans(int id, User* user,BookList *all_book){
     Book *p,*last;
     last=user->loans->list->next;
+    p=all_book->list->next;
     while(last->id==id){
         last=last->next;
     }
-    last->copies++;
+    while(p){
+        if(p->id==id){
+            p->copies++;
+            break;
+        }
+        p=p->next;
+    }
     remove_book(*last,user->loans);
     user->loans->length--;
+    return 0;
+}
 
+int remove_loansBy_libraian(int id, UserList* all_user,BookList *all_book){
+    User *p;
+    p=all_user->list->next;
+    while(p){
+        remove_loans(id,p,all_book);
+    }
+    return 0;
 }
 
 int add_user(User user,UserList *all_user){
@@ -287,6 +341,7 @@ int add_book(Book book,BookList *all_book){
     while(last->next){
         last=last->next;
     }
+
     last->next=p;
     p->next=NULL;
     all_book->length++;
@@ -303,12 +358,12 @@ int remove_book(Book book,BookList *all_book){
     Book *p=all_book->list;
     int judge=1;
     while(p){
-        if (book.id==p->id)
+        if (book.id==p->next->id)
         {
-            free(p->title);
-            free(p->authors);
-            Book *h=p;
-            p=p->next;
+            free(p->next->title);
+            free(p->next->authors);
+            Book *h=p->next;
+            p->next=p->next->next;
             DeleteNode(h);
             all_book->length--;
             judge=0;
@@ -457,6 +512,43 @@ void printbook(BookList h)     /* h为头指针 */
     return;
 } 
 
+Book input_add_book(BookList *all_book){
+
+    Book input;
+
+    input.title=(char*)malloc(sizeof(char)*80);
+    printf("Enter the title of the book you wish to add: ");
+    fgets(input.title,80,stdin);
+    removeNewLine(input.title);
+    if(input.title=="")
+    printf("Sorry,the title can't be empty, please try again.\n");
+    
+    input.authors=(char*)malloc(sizeof(char)*80);
+    printf("Enter the author of the book you wish to add: ");
+    fgets(input.authors,80,stdin);
+    removeNewLine(input.authors);
+    if(input.authors=="")
+    printf("Sorry,the author can't be empty, please try again.\n");
+
+    printf("Enter the year of the book you wish to add was released: ");
+    input.year = optionChoice();
+    if(input.year==0)printf("Sorry,the year you entered was invalid, please try again.\n");
+    
+    printf("Enter the number of copies of the book that you wish to add: ");
+    input.copies = optionChoice();
+
+    input.next=NULL;
+
+    Book *last;
+    last=all_book->list;
+    while(last->next){
+        last=last->next;
+    }
+    input.id=last->id+1;//有问题，关于id
+
+    return input;
+}
+
 int main(){
 
     
@@ -487,9 +579,19 @@ int main(){
     {
         load_books(fp, all_book);
         //load_users(fp, all_user);
-        fclose(fp);}
+        fclose(fp);
+    }
     
+    printbook(*all_book);
+    //SearchBook( all_book );
+    //add_book(input_add_book(all_book),all_book);
+    //remove_book((input_remove_book(all_book)),all_book);
+     
     //printbook(*all_book);
+    //fp = fopen(bookFile, "w+");
+    //store_books(fp,all_book);
+    //fclose(fp);
+
     //search 测试
     //const char *title_test="Harry";
     //char title_test[80]="Harry";
@@ -499,7 +601,7 @@ int main(){
     //printbook(find_book_by_author (author_test,all_book));
     //printbook(find_book_by_year (year_test,all_book));
     //user 测试
-    printf("%s\t\t%s\n",all_user->list->next->username,all_user->list->next->password);
+    //printf("%s\t\t%s\n",all_user->list->next->username,all_user->list->next->password);
     //free(all_book);
     //free( all_user );
 

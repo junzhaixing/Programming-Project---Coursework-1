@@ -17,7 +17,7 @@ void reg(UserList* ul)
     //find if the name is avaible
     for(int i=1;i<=ul->length-1;i++)
     {
-        if(p->username==name)
+        if(!strcmp(p->username,name))
         {
             judge=0;
             break;
@@ -27,11 +27,11 @@ void reg(UserList* ul)
             p=p->next;
         }
     }
-    if(judge==0||p->username=="librarian")
+    if(judge==0||!strcmp(p->username,"librarian"))
     {
         printf("Sorry, registration unsuccessful, the username you entered already exists.\n");
     }
-    else if( p->username==""||p->password=="")
+    else if( !strcmp(p->username,"")||!strcmp(p->password,""))
     {
         printf("Sorry, registration unsuccessful, the username or password can't be blank.\n");
     }
@@ -65,9 +65,9 @@ User* login(UserList* ul)
     //find if the user is exist
     for(int i=1;i<=ul->length-1;i++)
     {
-        if(p->username==name)
+        if(!strcmp(p->username,name))
         {
-            if(p->password==password){
+            if(!strcmp(p->password,password)){
                judge=1; 
                break;
             }  
@@ -77,7 +77,7 @@ User* login(UserList* ul)
             p=p->next;
         }
     }
-    if(name=="librarian"&&password=="librarian")
+    if(!strcmp(p->username,"librarian")&&!strcmp(p->password,"librarian"))
         judge=2;
     if(judge==0)
     {
