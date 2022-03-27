@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-
+#include "book_management.h"
 #include "user.h"
 #include "utility.h"
 
-#include "book_management.h"
+
 ////
 // Code module for the library user
 // They can look for available books,
@@ -15,92 +16,7 @@
 
 // Menu system for library user
 
-void userCLI( User* user, BookList *all_book ) {
-    int userLoggedIn = 1;
-    int option;
 
-    while( userLoggedIn ){
-        printf("\n(logged in as: %s)\n",user->username);
-        printf("Please choose an option:\n");
-        printf("1) Borrow a book\n 2) Return a book\n3) Search for book\n4) Display all books\n5) Log out\n Option: ");
-        option = optionChoice();
-
-        if( option == 1 ) {//借书
-            int L=input_add_loan(user, all_book);
-            if( L != 0 ){
-                int success=add_loans(L, user, all_book);
-                if( success == 0)   
-                    printf("Book was successfully loaned!\n");
-            }
-    
-        }
-        else if( option == 2 ) {//还书
-            int L=input_remove_loan(user, all_book);
-            if( L != 0 ){
-                int success=remove_loans(L, user, all_book);
-                if( success == 0)   
-                    printf("Returned book successfully!\n");
-            }
-        }
-        else if( option == 3 ) {//查找书--
-            SearchBook( all_book );
-            
-        }
-        else if( option == 4 ) {//展示书--
-            printbook(*all_book);
-        }
-        else if( option == 5 ) {
-            userLoggedIn = 0;
-            printf("\nLogging out...\n");
-        }
-        else
-            printf("\nUnknown option\n");
-    }
-    return;
-}
-
-// Menu system for the librarian
-
-void librarianCLI( BookList *all_book, UserList *all_user) {
-    int librarianLoggedIn = 1;
-    int option;
-
-    while( librarianLoggedIn ){
-        printf("\n(logged in as: librarian)\n");
-        printf("Please choose an option:\n");
-        printf("1) Add a book\n2) Remove a book\n3) Search for book\n4) Display all books\n5) Log out\n Option: ");
-        option = optionChoice();
-
-        if( option == 1 ) {
-            //tianjiashu,--
-            int success=add_book((input_add_book(all_book)),all_book);
-            if( success == 0)   
-            printf("Book was successfully added!\n"); 
-        }
-        else if( option == 2 ) {//移除书--
-            Book p=input_remove_book(all_book);
-            int success=remove_book(p,all_book);
-            remove_loansBy_libraian(p.id, all_user,all_book);
-            if( success == 0)   
-            printf("Book was successfully removed!\n");
-            
-        }
-        else if( option == 3 ) {//查找书--
-            
-            SearchBook( all_book );
-        }
-        else if( option == 4 ) {//展示书--
-            printbook(*all_book);
-        }
-        else if( option == 5 ) {
-            librarianLoggedIn = 0;
-            printf("\nLogging out...\n");
-        }
-        else
-            printf("\nSorry,the option you entered was invalid, please try again.\n");
-    }
-    return;
-}
 
 
 void SearchBook( BookList *all_book )//--
@@ -109,8 +25,7 @@ void SearchBook( BookList *all_book )//--
     int option;
 
     printf("\nLoading search menu...\n");
-    while( SearchIn ){
-        printf("\nLoading search menu...\n");  
+    while( SearchIn ){  
         printf("Please choose an option:\n");
         printf("1) Find book by title\n2) Find book by author\n3) Find book by year\n4) Return to previous menu\n Option: ");
         option = optionChoice();
@@ -190,7 +105,7 @@ int input_add_loan(User* user,BookList*all_book){
 int input_remove_loan(User* user,BookList*all_book){
     int l_id;
     printf("Below the list of book you are currently borrowing: \n");
-    printbook(*all_book);
+    printbook(*(user->loans));
 
     printf("Enter the ID number of the book you wish to return: \n");
     l_id=optionChoice();
@@ -242,14 +157,14 @@ Book input_add_book(BookList *all_book){
     printf("Enter the title of the book you wish to add: ");
     fgets(input.title,80,stdin);
     removeNewLine(input.title);
-    if(input.title=="")
+    if(!strcmp(input.title,""))
     printf("Sorry,the title can't be empty, please try again.\n");
     
     input.authors=(char*)malloc(sizeof(char)*80);
     printf("Enter the author of the book you wish to add: ");
     fgets(input.authors,80,stdin);
     removeNewLine(input.authors);
-    if(input.authors=="")
+    if(!strcmp(input.authors,""))
     printf("Sorry,the author can't be empty, please try again.\n");
 
     printf("Enter the year of the book you wish to add was released: ");
@@ -269,4 +184,91 @@ Book input_add_book(BookList *all_book){
     input.id=last->id+1;//有问题，关于id
 
     return input;
+}
+
+void userCLI( User* user, BookList *all_book ) {
+    int userLoggedIn = 1;
+    int option;
+
+    while( userLoggedIn ){
+        printf("\n(logged in as: %s)\n",user->username);
+        printf("Please choose an option:\n");
+        printf("1) Borrow a book\n2) Return a book\n3) Search for book\n4) Display all books\n5) Log out\n Option: ");
+        option = optionChoice();
+
+        if( option == 1 ) {//借书
+            int L=input_add_loan(user, all_book);
+            if( L != 0 ){
+                int success=add_loans(L, 1, user, all_book);
+                if( success == 0)   
+                    printf("Book was successfully loaned!\n");
+            }
+    
+        }
+        else if( option == 2 ) {//还书
+            int L=input_remove_loan(user, all_book);
+            if( L != 0 ){
+                int success=remove_loans(L, user, all_book);
+                if( success == 0)   
+                    printf("Returned book successfully!\n");
+            }
+        }
+        else if( option == 3 ) {//查找书--
+            SearchBook( all_book );
+            
+        }
+        else if( option == 4 ) {//展示书--
+            printbook(*all_book);
+        }
+        else if( option == 5 ) {
+            userLoggedIn = 0;
+            printf("\nLogging out...\n");
+        }
+        else
+            printf("\nUnknown option\n");
+    }
+    return;
+}
+
+// Menu system for the librarian
+
+void librarianCLI( BookList *all_book, UserList *all_user) {
+    int librarianLoggedIn = 1;
+    int option;
+
+    while( librarianLoggedIn ){
+        printf("\n(logged in as: librarian)\n");
+        printf("Please choose an option:\n");
+        printf("1) Add a book\n2) Remove a book\n3) Search for book\n4) Display all books\n5) Log out\n Option: ");
+        option = optionChoice();
+
+        if( option == 1 ) {
+            //tianjiashu,--
+            int success=add_book((input_add_book(all_book)),all_book);
+            if( success == 0)   
+            printf("Book was successfully added!\n"); 
+        }
+        else if( option == 2 ) {//移除书--
+            Book p=input_remove_book(all_book);
+            int success=remove_book(p,all_book);
+            remove_loansBy_libraian(p.id, all_user,all_book);
+            if( success == 0)   
+            printf("Book was successfully removed!\n");
+            
+        }
+        else if( option == 3 ) {//查找书--
+            
+            SearchBook( all_book );
+        }
+        else if( option == 4 ) {//展示书--
+            printbook(*all_book);
+        }
+        else if( option == 5 ) {
+            librarianLoggedIn = 0;
+            printf("\nLogging out...\n");
+        }
+        else
+            printf("\nSorry,the option you entered was invalid, please try again.\n");
+    }
+    return;
 }

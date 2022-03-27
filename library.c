@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+#include "book_management.h"
 #include "library.h"
 #include "user.h"
 #include "utility.h"
 
 
 #include "reg_login.h"
-#include "book_management.h"
+
 
 ////
 // Code module for main library menu and file management
@@ -29,7 +29,7 @@ void initLibrary( BookList *all_book, UserList *all_user){
   fclose(fp);
   if(bookFile_error==-2)
   printf("Error loading book file");
-
+  
   char* userFile="user.txt";
   fp = NULL;
   fp = fopen(userFile, "r");
@@ -45,6 +45,8 @@ void initLibrary( BookList *all_book, UserList *all_user){
   fclose(fp);
   if(loanFile_error==-2)
   printf("Error loading loan file");
+  
+
   //printf("Error\nBook file does not exist: %s\n",bookFile);
   //exit(0);
   
@@ -58,19 +60,39 @@ void initLibrary( BookList *all_book, UserList *all_user){
 
 void exitLibrary( BookList *all_book, UserList *all_user) {
 
+    char* bookFile="book.txt";
+    FILE *fp = NULL;
+    fp = fopen(bookFile, "w+");
+    int bookFile_error=store_books(fp,all_book);
+    fclose(fp);
+    if(bookFile_error==-2)
+    printf("Error store book file");
     
-    
-    
-    
+    char* userFile="user.txt";
+    fp = NULL;
+    fp = fopen(userFile, "w+");
+    int userFile_error=store_users(fp,all_user);
+    fclose(fp);
+    if(userFile_error==-2)
+    printf("Error store book file");
+
+    char* loanFile="loans.txt";
+    fp = NULL;
+    fp = fopen(loanFile, "w+");
+    int loanFile_error=store_loans(fp, all_user);
+    fclose(fp);
+    if(loanFile_error==-2)
+    printf("Error store book file");
     
     // free the allocated lists
     delete_book(all_book);
+    //printf("deletebook\n");
     User *p=all_user->list,*q;
     while(p)       /* p没有指向链表尾则循环 */
     {   
-        free(p->username);
-        free(p->password);
-        delete_book(p->loans);
+        //free(p->username);
+        //free(p->password);
+        //delete_book(p->loans);
         free(p->loans);
         q=p;                        /* 保存p */ 
         p=p->next;           /* p向前推进一个结点 */
@@ -85,13 +107,26 @@ void exitLibrary( BookList *all_book, UserList *all_user) {
 void libraryCLI(){
     int libraryOpen = 1;
     int option;
-
+    
     // create the library structure 
     BookList *all_book = (BookList *)malloc( sizeof(BookList) );
     UserList *all_user = (UserList *)malloc( sizeof(UserList) );
-
+    
     initLibrary( all_book, all_user );
-   
+    
+    printbook(*all_book);
+    User *p=all_user->list->next;
+    User *k=all_user->list->next;
+    while(p){
+        printf("%s\t%s\n",p->username,p->password);
+        p=p->next;
+    }
+    while(k){
+        printf("%s\n",k->username);
+        printbook(*(k->loans));
+        k=k->next;
+    }
+
     while( libraryOpen ){
         printf("\nPlease choose an option\n1) Register\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
         option = optionChoice();

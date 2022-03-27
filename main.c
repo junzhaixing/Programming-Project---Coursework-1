@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libraryStructures.h"
+#include "book_management.h"
 #include "library.h"
 
 ////
@@ -19,9 +19,10 @@
 
 int main( int argc, char **argv )
 {
-    char bookFile[40];
+    //char bookFile[40];
 
     //TO DO :
+    /*
     if( argc != 2 )
     {
         // check that correct number of command line arguments are entered    
@@ -33,13 +34,13 @@ int main( int argc, char **argv )
 
     // assign command line value to filename string
     strcpy(&bookFile[0],argv[1]);
-
+    */
     //printf("%s\n",bookFile);                 test
 
     // DO NOT ALTER
     // start the system
     printf("\nIntialising library system!\n");
-    libraryCLI( bookFile );
+    libraryCLI();
     printf("\nClosing library system!\n\n");
 
     return 0;

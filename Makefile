@@ -2,7 +2,7 @@
 # code details
 
 EXE = ./library
-SRC= main.c library.c user.c utility.c
+SRC= main.c book_management.c library.c  reg_login.c user.c utility.c
 
 # generic build details
 
@@ -30,9 +30,9 @@ clean:
 # dependencies
 
 main.o:      main.c library.h book_management.h
-library.o:   library.c library.h reg_login.h user.h utility.h book_management.h
-reg_login.o: reg_login.c reg_login.h utility.h book_management.h
-user.o:      user.c user.h utility.h book_management.h
+library.o:   library.c library.h reg_login.h user.h  book_management.h utility.h
+reg_login.o: reg_login.c reg_login.h  book_management.h utility.h
+user.o:      user.c user.h  book_management.h utility.h
 book_management.o:      book_management.c book_management.h utility.h
 utility.o:   utility.c utility.h 
 

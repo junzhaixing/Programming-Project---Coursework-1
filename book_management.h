@@ -83,7 +83,7 @@ int load_users(FILE *file, UserList *all_user);
 
 int load_loans(FILE *file, UserList *all_user,BookList *all_book);
 
-int add_loans(int id, User* user,BookList *all_book);
+int add_loans(int id, int option,User* user,BookList *all_book);
 
 int remove_loans(int id, User* user,BookList *all_book);
 
@@ -96,6 +96,8 @@ int add_book(Book book,BookList *all_book);
 //removes a book from the library
 //returns 0 if the book could be successfully removed, or an error code otherwise.
 int remove_book(Book book,BookList *all_book);
+
+int remove_loansBy_libraian(int id, UserList* all_user,BookList *all_book);
 
 void delete_book(BookList *all_book);
 
