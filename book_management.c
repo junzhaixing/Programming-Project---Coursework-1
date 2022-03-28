@@ -4,28 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "utility.h"
-/*
-void removeNewLine(char* string) {
 
-    size_t length = strlen(string);
-
-    if((length > 0) && (string[length-1] == '\n')) {
-        string[length-1] ='\0';
-    }
-    return;
-}
-int optionChoice( void ) {
-    int option = -1;
-    char line[80];
-
-    // read in the current line as a string
-    fgets(line,80,stdin);
-
-    // atoi() converts string to integer, returns 0 if could not convert
-    option = (int)atoi(line);
-
-    return option;
-}*/
 void first_book_get(BookList *p){
     //最长值初始化
     p->authors_longest=0;
@@ -66,7 +45,7 @@ int store_users(FILE *file,UserList *all_user){
     User *last;
     last=all_user->list->next;
     if(strcmp(last->username,"librarian"))
-    fprintf(file,"%s-%s\n", "librarian","123456");
+    fprintf(file,"%s-%s\n", "librarian","librarian");
     while(last){
         fprintf(file,"%s-%s\n", last->username,last->password);
         last=last->next;
@@ -192,14 +171,14 @@ int load_users(FILE *file, UserList *all_user)
         char* fenduan;
         fenduan=strtok(line, "-");
         p->username=(char*)malloc(sizeof(char)*80);
-        printf("%s\n",fenduan);
+        //printf("%s\n",fenduan);
         strcpy(p->username,fenduan);
         
         fenduan=strtok(NULL, "-");
         p->password=(char*)malloc(sizeof(char)*80);
-        printf("%d %s\n",strlen(fenduan),fenduan);
+        //printf("%d %s\n",strlen(fenduan),fenduan);
         strcpy(p->password,fenduan);
-        printf("%s %d\n",p->password,strlen(p->password));
+        //printf("%s %d\n",p->password,strlen(p->password));
 
         p->loans=(BookList*)malloc(sizeof(BookList));
         p->loans->list=(Book*)malloc(sizeof(Book));
@@ -495,7 +474,7 @@ BookList find_book_by_year (unsigned int year,BookList *all_book){
 }
 
 //******************************************************
-void printbook(BookList h)     /* h为头指针 */
+void printbook(BookList h)    
 {   
     
     Book *p=h.list->next;
@@ -507,13 +486,13 @@ void printbook(BookList h)     /* h为头指针 */
     /*p指向第一个数据结点, 如果链表不带附加头结点则p=h;*/
     //打印表头
     //printf("ID\tTitle\tAuthor\tyear\tcopies\n");
-    printf("ID");
+    printf("%-5s","ID");
     for(int i=1;i<=interval;i++)printf(" ");
     printf("Title");
     for(int i=1;i<=h.title_longest+interval-5;i++)printf(" ");
     printf("Author");
     for(int i=1;i<=h.authors_longest+interval-6;i++)printf(" ");
-    printf("year");
+    printf("%-5s","year");
     for(int i=1;i<=interval;i++)printf(" ");
     printf("copies\n");
 
@@ -524,13 +503,13 @@ void printbook(BookList h)     /* h为头指针 */
         int al=strlen(p->authors);
         
         //printf("%d\t%s\t%s\t%d\t%d\n",p->id,p->title,p->authors,p->year,p->copies);
-        printf("%d",p->id);//这里只考虑了id小于10--
-        for(int i=1;i<=interval+1;i++)printf(" ");
+        printf("%-5d",p->id);//考虑了id大于10
+        for(int i=1;i<=interval;i++)printf(" ");
         printf("%s",p->title);
         for(int i=1;i<=h.title_longest+interval-tl;i++)printf(" ");
         printf("%s",p->authors);
         for(int i=1;i<=h.authors_longest+interval-al;i++)printf(" ");
-        printf("%d",p->year);
+        printf("%-5d",p->year);
         for(int i=1;i<=interval;i++)printf(" ");
         printf("%d\n",p->copies);
 

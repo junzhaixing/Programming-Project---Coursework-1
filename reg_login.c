@@ -74,8 +74,7 @@ User* login(UserList* ul)
         //printf("%s\t%s\n",p->password,p->username);
         //printf("%d\t%d\n",strlen(password),strlen(p->password));
         //for(int i=0;i<strlen(p->password);i++){
-            //printf("%c\n",p->password[i]);
-        //}
+            //printf("%c\n",p->password[i]);}
         //printf("%d\n",strncmp(password, p->password, strlen(password)));
         //printf("%d %d\n",(!strcmp(p->username,name)),(!strncmp(password, p->password, strlen(password))));
         if(!strcmp(p->username,name))

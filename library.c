@@ -28,7 +28,7 @@ void initLibrary( BookList *all_book, UserList *all_user){
   int bookFile_error=load_books(fp, all_book);
   fclose(fp);
   if(bookFile_error==-2)
-  printf("Error loading book file");
+  printf("Error loading book file\n");
   
   char* userFile="user.txt";
   fp = NULL;
@@ -36,7 +36,8 @@ void initLibrary( BookList *all_book, UserList *all_user){
   int userFile_error=load_users(fp, all_user);
   fclose(fp);
   if(userFile_error==-2)
-  printf("Error loading user file");
+  printf("Error loading user file\n");
+  
 
   char* loanFile="loans.txt";
   fp = NULL;
@@ -44,7 +45,7 @@ void initLibrary( BookList *all_book, UserList *all_user){
   int loanFile_error=load_loans(fp, all_user, all_book);
   fclose(fp);
   if(loanFile_error==-2)
-  printf("Error loading loan file");
+  printf("Error loading loan file\n");
   
 
   //printf("Error\nBook file does not exist: %s\n",bookFile);
