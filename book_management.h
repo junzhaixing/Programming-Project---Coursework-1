@@ -119,7 +119,7 @@ BookList find_book_by_author (const char *author,BookList *all_book);
 //list is the NULL pointer.
 BookList find_book_by_year (unsigned int year,BookList *all_book);
 
-void printbook(BookList h);
+void printbook(BookList h,int option); 
 
 
 

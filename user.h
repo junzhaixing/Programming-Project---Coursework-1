@@ -11,6 +11,6 @@ int input_add_loan(User* user,BookList*all_book);
 
 int input_remove_loan(User* user,BookList*all_book);
 
-Book input_remove_book(BookList *all_book);
+Book* input_remove_book(BookList *all_book);
 
-Book input_add_book(BookList *all_book);
+Book* input_add_book(BookList *all_book);

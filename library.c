@@ -10,16 +10,7 @@
 
 #include "reg_login.h"
 
-
-////
-// Code module for main library menu and file management
-// Reads the book and initialises the problem data
-
 // Initialise library data
-// Input: 
-// bookfile - name of book file
-// theLibrary - library data structure
-
 void initLibrary( BookList *all_book, UserList *all_user){
 
   char* bookFile="book.txt";
@@ -47,20 +38,15 @@ void initLibrary( BookList *all_book, UserList *all_user){
   if(loanFile_error==-2)
   printf("Error loading loan file\n");
   
-
   //printf("Error\nBook file does not exist: %s\n",bookFile);
   //exit(0);
-  
   return;
 }
 
 
 // Free any allocated library data
-// Input: 
-// theLibrary - library data structure
-
 void exitLibrary( BookList *all_book, UserList *all_user) {
-
+    //store the book data to the file
     char* bookFile="book.txt";
     FILE *fp = NULL;
     fp = fopen(bookFile, "w+");
@@ -68,7 +54,7 @@ void exitLibrary( BookList *all_book, UserList *all_user) {
     fclose(fp);
     if(bookFile_error==-2)
     printf("Error store book file");
-    
+    //store the user data to the file
     char* userFile="user.txt";
     fp = NULL;
     fp = fopen(userFile, "w+");
@@ -76,7 +62,7 @@ void exitLibrary( BookList *all_book, UserList *all_user) {
     fclose(fp);
     if(userFile_error==-2)
     printf("Error store book file");
-
+    //store the loan data to the file
     char* loanFile="loans.txt";
     fp = NULL;
     fp = fopen(loanFile, "w+");
@@ -89,15 +75,15 @@ void exitLibrary( BookList *all_book, UserList *all_user) {
     delete_book(all_book);
     //printf("deletebook\n");
     User *p=all_user->list,*q;
-    while(p)       /* p没有指向链表尾则循环 */
+    while(p)      
     {   
         //free(p->username);
         //free(p->password);
         //delete_book(p->loans);
         free(p->loans);
-        q=p;                        /* 保存p */ 
-        p=p->next;           /* p向前推进一个结点 */
-        DeleteNode(q);             /* 删除结点*q */
+        q=p;                         
+        p=p->next;           
+        DeleteNode(q);            
     }
     return;
 }
@@ -115,7 +101,7 @@ void libraryCLI(){
     
     initLibrary( all_book, all_user );
     
-    printbook(*all_book);
+    printbook(*all_book,1);
     User *p=all_user->list->next;
     User *k=all_user->list->next;
     while(p){
@@ -124,7 +110,7 @@ void libraryCLI(){
     }
     while(k){
         printf("%s\n",k->username);
-        printbook(*(k->loans));
+        printbook(*(k->loans),2);
         k=k->next;
     }
 
@@ -132,11 +118,11 @@ void libraryCLI(){
         printf("\nPlease choose an option\n1) Register\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
         option = optionChoice();
 
-        if( option == 1 ) {
-            reg( all_user );//user list设置
+        if( option == 1 ) {//user register
+            reg( all_user );
         }
         else if( option == 2 ) {
-            User* k=login( all_user );//user list还未设置
+            User* k=login( all_user );//user login
             if(k!=NULL)
             {
                 if(!strcmp(k->username,"librarian")&&!strcmp(k->password,"librarian"))
@@ -145,13 +131,11 @@ void libraryCLI(){
             }
       
         }
-        else if( option == 3 ) {
-            //search for book
+        else if( option == 3 ) {//search for book
             SearchBook( all_book );
         }
-        else if( option == 4 ) {
-            //zhanshiliebiaohanshu
-            printbook(*all_book);
+        else if( option == 4 ) {//diplay the book
+            printbook(*all_book,1);
         }
         else if( option == 5 ) {
             libraryOpen = 0;

@@ -13,11 +13,11 @@ void first_book_get(BookList *p){
     //头节点虚拟初始化
     p->list->id=10000;
     
-    p->list->title=(char*)malloc(sizeof(char)*80);
+    p->list->title=(char*)malloc(sizeof(char)*5);
     p->list->title="xuni";
     //strcpy(p->title,book.title);
     
-    p->list->authors=(char*)malloc(sizeof(char)*80);
+    p->list->authors=(char*)malloc(sizeof(char)*5);
     p->list->authors="xuni";
     //strcpy(p->authors,book.authors);
 
@@ -91,8 +91,8 @@ int load_books(FILE *file, BookList *all_book){
     all_book->authors_longest=0;
     all_book->title_longest=0;
     
-    char line[100];
-    while((fgets(line,100,file)) != NULL)
+    char line[1024];
+    while((fgets(line,1024,file)) != NULL)
     { 
         //removeNewLine(line);
         Book *p;
@@ -104,14 +104,14 @@ int load_books(FILE *file, BookList *all_book){
         p->id=(int)atoi(fenduan);
 
         fenduan=strtok(NULL, "-");
-        p->title=(char*)malloc(sizeof(char)*80);
+        p->title=(char*)malloc(sizeof(char)*(strlen(fenduan)+1));
         // printf("%s\n",fenduan);
         strcpy(p->title,fenduan);
         int l_title=strlen(p->title);
         if(l_title>all_book->title_longest) all_book->title_longest=l_title;
 
         fenduan=strtok(NULL, "-");
-        p->authors=(char*)malloc(sizeof(char)*80);
+        p->authors=(char*)malloc(sizeof(char)*(strlen(fenduan)+1));
         //printf("%s\n",fenduan);
         strcpy(p->authors,fenduan);
         int l_authors=strlen(p->authors);
@@ -124,17 +124,13 @@ int load_books(FILE *file, BookList *all_book){
         p->copies=(int)atoi(fenduan);
         //test
         //printf("%d\t%s\t\t%s\t%d\t%d\n",p->id,p->title,p->authors,p->year,p->copies);
-        /*新结点插入到链表结尾*/
         last->next=p;last=p; 
         x++;        
     }
-    /*最后一个结点指针域赋值为NULL*/
+    /*last point is NULL*/
     last->next=NULL;        
     all_book->length=x;
-    //BookList *k;
-    //k=(BookList*)malloc(sizeof(BookList));
-    //k->list=first;
-    //k->length=x;
+    
     return 0;
 
 }
@@ -147,7 +143,6 @@ int load_users(FILE *file, UserList *all_user)
     }
     int x=1;
     User *first,*last;
-    /* 建立附加头结点 */
     
     first=(User*)malloc(sizeof(User));
     all_user->list = first;
@@ -157,10 +152,10 @@ int load_users(FILE *file, UserList *all_user)
     first->password="xuni";
     first->loans=NULL;
     
-    
-    last=first;          /* last始终指向当前最后一个结点 */
-    char line[100];
-    while((fgets(line,100,file)) != NULL)
+    // last always points to last pointer 
+    last=first;         
+    char line[1024];
+    while((fgets(line,1024,file)) != NULL)
     { 
         //printf("%d %s\n",strlen(line),line);
         removeNewLine(line);
@@ -170,12 +165,12 @@ int load_users(FILE *file, UserList *all_user)
         //const char s[2] = "-";
         char* fenduan;
         fenduan=strtok(line, "-");
-        p->username=(char*)malloc(sizeof(char)*80);
+        p->username=(char*)malloc(sizeof(char)*(strlen(fenduan)+1));
         //printf("%s\n",fenduan);
         strcpy(p->username,fenduan);
         
         fenduan=strtok(NULL, "-");
-        p->password=(char*)malloc(sizeof(char)*80);
+        p->password=(char*)malloc(sizeof(char)*(strlen(fenduan)+1));
         //printf("%d %s\n",strlen(fenduan),fenduan);
         strcpy(p->password,fenduan);
         //printf("%s %d\n",p->password,strlen(p->password));
@@ -186,7 +181,7 @@ int load_users(FILE *file, UserList *all_user)
         
         //printf("%s\t\t%s\n",p->username,p->password);
         
-        /*新结点插入到链表结尾*/
+        //new pointer get to the last of booklist
         last->next=p;last=p; 
         x++;        
     }
@@ -206,8 +201,8 @@ int load_loans(FILE *file, UserList *all_user,BookList *all_book){
         return -2;
     }
     
-    char line[100];
-    while((fgets(line,100,file)) != NULL)
+    char line[1024];
+    while((fgets(line,1024,file)) != NULL)
     { 
         removeNewLine(line);
         User *p=all_user->list->next;
@@ -283,7 +278,17 @@ int remove_loansBy_libraian(int id, UserList* all_user,BookList *all_book){
     User *p;
     p=all_user->list->next;
     while(p){
-        remove_loans(id,p,all_book);
+        Book* k=p->loans->list->next;
+        int h_i=0;
+        while(k)
+        {
+        if(k->id==id){
+            h_i=1;
+            break;
+            }
+        k=k->next;
+        }
+        if(h_i==1) remove_loans(id,p,all_book);
         p=p->next;
     }
     return 0;
@@ -295,10 +300,10 @@ int add_user(User user,UserList *all_user){
     last=all_user->list;
     p=(User*)malloc(sizeof(User));
 
-    p->username=(char*)malloc(sizeof(char)*80);
+    p->username=(char*)malloc(sizeof(char)*(strlen(user.username)+1));
     strcpy(p->username,user.username);
 
-    p->password=(char*)malloc(sizeof(char)*80);
+    p->password=(char*)malloc(sizeof(char)*(strlen(user.password)+1));
     strcpy(p->password,user.password);
 
     p->loans=(BookList*)malloc(sizeof(BookList));
@@ -325,12 +330,12 @@ int add_book(Book book,BookList *all_book){
     CreateNode(p);
     p->id=book.id;
     
-    p->title=(char*)malloc(sizeof(char)*80);
+    p->title=(char*)malloc(sizeof(char)*(strlen(book.title)+1));
     strcpy(p->title,book.title);
     int l_title=strlen(p->title);
     if(l_title>all_book->title_longest) all_book->title_longest=l_title;
     
-    p->authors=(char*)malloc(sizeof(char)*80);
+    p->authors=(char*)malloc(sizeof(char)*(strlen(book.authors)+1));
     strcpy(p->authors,book.authors);
     int l_authors=strlen(p->authors);
     if(l_authors>all_book->authors_longest) all_book->authors_longest=l_authors;
@@ -474,12 +479,16 @@ BookList find_book_by_year (unsigned int year,BookList *all_book){
 }
 
 //******************************************************
-void printbook(BookList h)    
+void printbook(BookList h,int option)    
 {   
     
     Book *p=h.list->next;
-    if(p==NULL){
-        printf("There have no book here!\n");
+    if(p==NULL&&option==1){
+        printf("There have no book in this library!\n");
+        return;
+    }
+    else if(p==NULL&&option==2){
+        printf("You don't borrow book!\n");
         return;
     }
     int interval=7;  
@@ -493,12 +502,16 @@ void printbook(BookList h)
     printf("Author");
     for(int i=1;i<=h.authors_longest+interval-6;i++)printf(" ");
     printf("%-5s","year");
-    for(int i=1;i<=interval;i++)printf(" ");
-    printf("copies\n");
-
+    if(option==1){
+        for(int i=1;i<=interval;i++)printf(" ");
+        printf("copies\n");
+    }
+    else if(option==2){
+        printf("\n");
+    }
+    
     while(p) 
     { 
-        
         int tl=strlen(p->title);
         int al=strlen(p->authors);
         
@@ -510,8 +523,14 @@ void printbook(BookList h)
         printf("%s",p->authors);
         for(int i=1;i<=h.authors_longest+interval-al;i++)printf(" ");
         printf("%-5d",p->year);
-        for(int i=1;i<=interval;i++)printf(" ");
-        printf("%d\n",p->copies);
+
+        if(option==1){
+            for(int i=1;i<=interval;i++)printf(" ");
+            printf("%d\n",p->copies);
+        }
+        else if(option==2){
+            printf("\n");
+        }
 
         p=p->next; 
     }
