@@ -6,21 +6,19 @@
 #include "utility.h"
 
 void first_book_get(BookList *p){
-    //最长值初始化
+    //String longest value initialization
     p->authors_longest=0;
     p->title_longest=0;
     p->length=1;
-    //头节点虚拟初始化
+    //Header node initialization
     p->list->id=10000;
     
     p->list->title=(char*)malloc(sizeof(char)*5);
     p->list->title="xuni";
-    //strcpy(p->title,book.title);
     
     p->list->authors=(char*)malloc(sizeof(char)*5);
     p->list->authors="xuni";
-    //strcpy(p->authors,book.authors);
-
+    
     p->list->next=NULL;
     
     p->list->year=0000;
@@ -82,14 +80,11 @@ int load_books(FILE *file, BookList *all_book){
 
     int x=1;
     Book *first,*last;
-    CreateNode(first);     /* 建立附加头结点 */
+    CreateNode(first);     
     all_book->list = first;
     first_book_get(all_book);
     
-    last=first;          /* last始终指向当前最后一个结点 */
-    //最长值初始化
-    all_book->authors_longest=0;
-    all_book->title_longest=0;
+    last=first;          
     
     char line[1024];
     while((fgets(line,1024,file)) != NULL)
@@ -478,7 +473,7 @@ BookList find_book_by_year (unsigned int year,BookList *all_book){
 
 }
 
-//******************************************************
+//display all book
 void printbook(BookList h,int option)    
 {   
     
@@ -492,11 +487,11 @@ void printbook(BookList h,int option)
         return;
     }
     int interval=7;  
-    /*p指向第一个数据结点, 如果链表不带附加头结点则p=h;*/
-    //打印表头
-    //printf("ID\tTitle\tAuthor\tyear\tcopies\n");
+    
+    //printf the header
+    
     printf("%-5s","ID");
-    for(int i=1;i<=interval;i++)printf(" ");
+    for(int i=1;i<=interval-5;i++)printf(" ");
     printf("Title");
     for(int i=1;i<=h.title_longest+interval-5;i++)printf(" ");
     printf("Author");
@@ -516,8 +511,8 @@ void printbook(BookList h,int option)
         int al=strlen(p->authors);
         
         //printf("%d\t%s\t%s\t%d\t%d\n",p->id,p->title,p->authors,p->year,p->copies);
-        printf("%-5d",p->id);//考虑了id大于10
-        for(int i=1;i<=interval;i++)printf(" ");
+        printf("%-5d",p->id);
+        for(int i=1;i<=interval-5;i++)printf(" ");
         printf("%s",p->title);
         for(int i=1;i<=h.title_longest+interval-tl;i++)printf(" ");
         printf("%s",p->authors);

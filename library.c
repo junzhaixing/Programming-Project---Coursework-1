@@ -6,8 +6,6 @@
 #include "library.h"
 #include "user.h"
 #include "utility.h"
-
-
 #include "reg_login.h"
 
 // Initialise library data
@@ -29,7 +27,6 @@ void initLibrary( BookList *all_book, UserList *all_user){
   if(userFile_error==-2)
   printf("Error loading user file\n");
   
-
   char* loanFile="loans.txt";
   fp = NULL;
   fp = fopen(loanFile, "r");
@@ -38,8 +35,6 @@ void initLibrary( BookList *all_book, UserList *all_user){
   if(loanFile_error==-2)
   printf("Error loading loan file\n");
   
-  //printf("Error\nBook file does not exist: %s\n",bookFile);
-  //exit(0);
   return;
 }
 
@@ -88,9 +83,8 @@ void exitLibrary( BookList *all_book, UserList *all_user) {
     return;
 }
 
-// DO NOT ALTER THIS FUNCTION
-// Library menu system
 
+// Library menu system
 void libraryCLI(){
     int libraryOpen = 1;
     int option;
@@ -115,7 +109,7 @@ void libraryCLI(){
     }
 
     while( libraryOpen ){
-        printf("\nPlease choose an option\n1) Register\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
+        printf("\nPlease choose an option\n1) Register an account\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
         option = optionChoice();
 
         if( option == 1 ) {//user register
@@ -135,6 +129,7 @@ void libraryCLI(){
             SearchBook( all_book );
         }
         else if( option == 4 ) {//diplay the book
+            printf("\n");
             printbook(*all_book,1);
         }
         else if( option == 5 ) {

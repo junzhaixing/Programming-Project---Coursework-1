@@ -1,6 +1,4 @@
 
-
-
 void userCLI( User* k, BookList *all_book );
 
 void SearchBook( BookList *all_book );

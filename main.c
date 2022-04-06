@@ -12,11 +12,7 @@
 
 ////
 // Code module for main()
-// main function takes command line arguments 
-// and opens the library menu
-// Input: book data filename via command line
-// Usage: ./library books.txt 
-
+// opens the library menu
 int main( int argc, char **argv )
 {
     //char bookFile[40];
@@ -39,9 +35,9 @@ int main( int argc, char **argv )
 
     // DO NOT ALTER
     // start the system
-    printf("\nIntialising library system!\n");
+    //printf("\nIntialising library system!\n");
     libraryCLI();
-    printf("\nClosing library system!\n\n");
+    //printf("\nClosing library system!\n\n");
 
     return 0;
 }

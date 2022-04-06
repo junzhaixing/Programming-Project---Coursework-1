@@ -9,7 +9,7 @@ void reg(UserList* ul)
 {
     User login_user;
     char name[1024],password[1024];
-    printf("Please enter a username: ");
+    printf("\nPlease enter a username: ");
     fgets(name,1024,stdin);
     removeNewLine(name);
     printf("Please enter a password: ");
@@ -59,20 +59,16 @@ void reg(UserList* ul)
     }
     else if(judge==1)
     {
-        //放入用户链表中。
-        printf("add\n");
+        //put new user to user link List 
         login_user.username=(char*)malloc(sizeof(char)*(strlen(name)+1));
-        // printf("%s\n",fenduan);
         strcpy(login_user.username,name);
-        
         login_user.password=(char*)malloc(sizeof(char)*(strlen(password)+1));
-        //printf("%s\n",fenduan);
         strcpy(login_user.password,password);
         login_user.loans=NULL;
         login_user.next=NULL;
            
         add_user(login_user,ul);
-        printf("registe succuess!");
+        printf("Registered library account succuessfully!\n");
     }
     return;
 }
@@ -80,7 +76,7 @@ void reg(UserList* ul)
 User* login(UserList* ul)
 {
     char name[1024],password[1024];
-    printf("Please enter your username: ");
+    printf("\nPlease enter your username: ");
     fgets(name,1024,stdin);
     removeNewLine(name);
     printf("Please enter your password: ");
