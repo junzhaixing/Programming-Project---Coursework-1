@@ -39,7 +39,7 @@ void SearchBook( BookList *all_book )
             int year;
             printf("\nPlease enter the year: ");
             year = optionChoice();
-            if(year==0)
+            if(year==-1)
                printf("Sorry,the year you entered was invalid, please try again.\n");
             else 
             {
@@ -56,11 +56,12 @@ void SearchBook( BookList *all_book )
       }
 }
 
+//collect user input and judge the input 
 int input_add_loan(User* user,BookList*all_book){
     int l_id;
     printf("\nEnter the ID of the book you wish to borrow: ");
     l_id=optionChoice();
-    if(l_id==0){
+    if(l_id==-1){
     printf("Sorry,the id you entered was invalid, please try again.\n");
     return 0;}
     Book* k=all_book->list->next;
@@ -90,6 +91,7 @@ int input_add_loan(User* user,BookList*all_book){
     return l_id;
 }
 
+//collect user input and judge the input 
 int input_remove_loan(User* user,BookList*all_book){
     int l_id;
     printf("\nBelow the list of book you are currently borrowing: \n");
@@ -97,12 +99,13 @@ int input_remove_loan(User* user,BookList*all_book){
 
     printf("Enter the ID number of the book you wish to return: ");
     l_id=optionChoice();
-    if(l_id==0){
+    if(l_id==-1){
         printf("Sorry,the id you entered was invalid.\n");
         return 0;
     }
     Book* k=user->loans->list->next;
     int h_i=0;
+    //judge if user not have this book
     while(k)
     {
         if(k->id==l_id){
@@ -115,6 +118,7 @@ int input_remove_loan(User* user,BookList*all_book){
         printf("Sorry,you don't have the copy of this book!\n");
         return 0;
     }
+    //judge if library don't have copies of this book
     if(k->copies==0){
         printf("Sorry,the copy of this book is none!\n");
         return 0;
@@ -125,13 +129,14 @@ int input_remove_loan(User* user,BookList*all_book){
 Book* input_remove_book(BookList *all_book){
     Book* remove;
     remove =malloc(sizeof(Book));
-    printf("\nEnter the id of the book you wish to remove: \n");
+    printf("\nEnter the id of the book you wish to remove: ");
     remove->id = optionChoice();
-    if(remove->id==0){
+    
+    if(remove->id==-1){
         printf("Sorry,the id you entered was invalid.\n");
         return NULL;
         }
-
+    
     Book* same=all_book->list->next;
     int judge=0;
     while(same){
@@ -209,15 +214,16 @@ Book* input_add_book(BookList *all_book){
     }
 
     printf("Enter the year of the book you wish to add was released: ");
+    
     input->year = optionChoice();
-    if(input->year==0){
+    if(input->year==-1||input->year>2022){
         printf("Sorry,the year you entered was invalid.\n");
         return NULL;
     }
     
     printf("Enter the number of copies of the book that you wish to add: ");
     input->copies = optionChoice();
-    if(input->copies==0){
+    if(input->copies==-1){
         printf("Sorry,the copies you entered was invalid.\n");
         return NULL;
     }
@@ -227,10 +233,17 @@ Book* input_add_book(BookList *all_book){
     input->authors=(char*)malloc(sizeof(char)*(strlen(authors)+1));
     strcpy(input->authors,authors);
     input->next=NULL;
+    //The ID will take precedence over the previously deleted ID value, 
+    //and if it does not, it will be added last  
     Book *last;
     last=all_book->list;
     while(last->next){
+        Book *temp=last;
         last=last->next;
+        if(last->id-temp->id>1){
+            input->id=temp->id+1;
+            return input;
+        }
     }
     input->id=last->id+1;//id is the bigggist id +1
 
@@ -302,7 +315,7 @@ void librarianCLI( BookList *all_book, UserList *all_user) {
                 printf("Book was successfully added!\n"); 
             }  
         }
-        else if( option == 2 ) {//remove one book
+        else if( option == 2 ) {//remove a book
             Book* p=input_remove_book(all_book);
             if(p!=NULL) {
                 remove_loansBy_libraian(p->id, all_user,all_book);

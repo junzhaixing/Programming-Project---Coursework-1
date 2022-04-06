@@ -11,7 +11,6 @@
   However, you may not change the function prototypes. 
   You are also free to add additional head files and data structures as needed. 
 */
-
 typedef struct _Book {
 	    unsigned int id; //Book ID
 		char *title; //book title
@@ -27,24 +26,10 @@ typedef struct _BookList {
 	Book* list; // pointer to a list of struct Book.
 	unsigned int length; // number of elements in the (Book*) List 
 
-	 //for printf排版整齐
+	 //for printf Typesetting neat
 	int title_longest;//record longest length of title
 	int authors_longest;//record longest author of title
 }BookList;
-
-/*
-typedef struct _Loans {
-	    
-	unsigned int id;
-	struct _Loans *next;
-
-}Loan;
-
-typedef struct _LoanList {
-	 Loan* list; // pointer to a list of struct loan.
-	 unsigned int length; // number of elements in the (loan*) List 
-}LoanList;
-*/
 
 typedef struct _User {
 	    
@@ -54,8 +39,6 @@ typedef struct _User {
 		//LoanList *loans; 
 		BookList *loans;//pointer to a list of loan book.
 
-		//Book *borrowed[4];//--要改
-        //int numBorrowed;
 }User;
 
 typedef struct _UserList {

@@ -6,7 +6,6 @@
 
 ////
 // Utility functions to handle "safer" string input
-//
 
 // DONT ALTER THESE FUNCTIONS
 
@@ -18,7 +17,14 @@ int optionChoice( void ) {
 
     // read in the current line as a string
     fgets(line,80,stdin);
-
+    
+    int length = strlen(line);
+    //judge the wrong input
+    for (int i = 0; i < length-1; i++) {
+        if(line[i] == '.'||line[i] <'0'||line[i] > '9')
+            return -1;
+    }
+    if(line[0]=='0')return -1;
     // atoi() converts string to integer, returns 0 if could not convert
     option = (int)atoi(line);
 

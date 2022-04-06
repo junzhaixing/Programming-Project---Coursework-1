@@ -19,22 +19,26 @@ void reg(UserList* ul)
     int judge=1;
     User *p=ul->list->next;
     int c='-';
+    //find if the username have blank
     if( strlen(name)==0||strlen(password)==0)
     {
         printf("Sorry, registration unsuccessful, the username or password can't be blank.\n");
         return;
     }
+    //find if the username and password have '-'
     else if(strchr(name,c)!=NULL||(strchr(password,c)!=NULL))
     {
         printf("Sorry, registration unsuccessful, the username or password can't have \'-\' .\n");
         return;
     }
+    //find if the username and password have two or more consecutive Spaces
     for(int i=0;i<strlen(name)-1;i++){
         if(name[i]==' '&&name[i+1]==' '){
             printf("Sorry,the username can't have two or more consecutive Spaces.\n");
             return;
         }
     }
+    //find if the password have two or more consecutive Spaces
     for(int i=0;i<strlen(password)-1;i++){
         if(password[i]==' '&&password[i+1]==' '){
             printf("Sorry,the password can't have two or more consecutive Spaces.\n");
@@ -52,7 +56,7 @@ void reg(UserList* ul)
         
         p=p->next;  
     }
-    
+    //find if the username is librarian
     if(judge==0||(!strcmp(name,"librarian")))
     {
         printf("Sorry, registration unsuccessful, the username you entered already exists.\n");
@@ -73,6 +77,7 @@ void reg(UserList* ul)
     return;
 }
 
+//get user login
 User* login(UserList* ul)
 {
     char name[1024],password[1024];
@@ -83,35 +88,27 @@ User* login(UserList* ul)
     fgets(password,1024,stdin);
     
     removeNewLine(password);
-    //printf("%d %s\n",strlen(password),password);
     int judge=0;
     User *p=ul->list->next;
     //find if the user is exist
     while(p)
     {
-        //printf("%s\t%s\n",p->password,p->username);
-        //printf("%d\t%d\n",strlen(password),strlen(p->password));
-        //for(int i=0;i<strlen(p->password);i++){
-            //printf("%c\n",p->password[i]);}
-        //printf("%d\n",strncmp(password, p->password, strlen(password)));
-        //printf("%d %d\n",(!strcmp(p->username,name)),(!strncmp(password, p->password, strlen(password))));
         if(!strcmp(p->username,name))
         {
-            //printf("%s\t%s\n",p->username,p->password);
-            if(!strncmp(password, p->password, strlen(p->password))){
+            if(!strcmp(password, p->password)){
                judge=1;
                break;
             }  
         }
-        
         p=p->next;
-        
     }
+    //judge if the user is librarian
     if((!strcmp(name,"librarian"))&&(!strcmp(password,"librarian")))
     {   
         judge=2;
         
     }
+    //return the information for difference condition
     if(judge==0)
     {
         printf("Sorry, login unsuccessful, the username and password you entered are not exists.\n");
@@ -129,7 +126,8 @@ User* login(UserList* ul)
         
         return admin;
     }
-    else if(judge==1)
-    return p;
-    
+    else if(judge==1){
+        return p;
+    }
+    return NULL;    
 }

@@ -8,7 +8,7 @@ SRC= main.c book_management.c library.c  reg_login.c user.c utility.c
 
 CC=      gcc
 CFLAGS= -std=c99 -Wall
-CLINK= 
+CLINK=  
 
 # compile to object code
 
@@ -21,6 +21,12 @@ OBJ= $(SRC:.c=.o)
 
 $(EXE): $(OBJ)
 	$(CC) $(OBJ) $(CLINK) -o $(EXE) 
+
+# build executable: type 'make all'
+
+all:  
+	$(CC) $(CFLAGS) $(SRC) -o $(EXE)
+
 
 # clean up and remove object code and executable: type 'make clean'
 

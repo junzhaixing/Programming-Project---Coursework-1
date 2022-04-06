@@ -11,7 +11,7 @@ void first_book_get(BookList *p){
     p->title_longest=0;
     p->length=1;
     //Header node initialization
-    p->list->id=10000;
+    p->list->id=0;
     
     p->list->title=(char*)malloc(sizeof(char)*5);
     p->list->title="xuni";
@@ -254,7 +254,7 @@ int remove_loans(int id, User* user,BookList *all_book){
     Book *p,*last;
     last=user->loans->list->next;
     p=all_book->list->next;
-    while(last->id==id){
+    while(last->id!=id){
         last=last->next;
     }
     while(p){
@@ -269,6 +269,7 @@ int remove_loans(int id, User* user,BookList *all_book){
     return 0;
 }
 
+//if librarian delet the book,delet the loan information 
 int remove_loansBy_libraian(int id, UserList* all_user,BookList *all_book){
     User *p;
     p=all_user->list->next;
@@ -289,6 +290,7 @@ int remove_loansBy_libraian(int id, UserList* all_user,BookList *all_book){
     return 0;
 }
 
+//add user to user list
 int add_user(User user,UserList *all_user){
 
     User *p,*last;
@@ -338,23 +340,33 @@ int add_book(Book book,BookList *all_book){
     p->year=book.year;
     p->copies=book.copies;
 
-    while(last->next){
-        last=last->next;
-    }
-
-    last->next=p;
-    p->next=NULL;
     all_book->length++;
-
+    if(book.id+1==all_book->length){
+       while(last->next){
+            last=last->next;
+        }
+        last->next=p;
+        p->next=NULL;
+    }
+    else if(book.id+1<all_book->length){
+        while(last->next){
+            if(last->id==book.id-1){
+                break;
+            }
+            last=last->next;
+        }
+        Book *temp=last->next;
+        last->next=p;
+        p->next=temp;
+    }
+    
     return 0;
-
 }
 
 //removes a book from the library
 //returns 0 if the book could be successfully removed, or an error code otherwise.
 int remove_book(Book book,BookList *all_book){
-    //if (!all_book)
-		//load_books(all_book);
+    
     Book *p=all_book->list;
     int judge=1;
     while(p){
@@ -377,15 +389,15 @@ int remove_book(Book book,BookList *all_book){
 
 void delete_book(BookList *all_book){
     Book *p=all_book->list,*q;
-    while(p)       /* p没有指向链表尾则循环 */
+    while(p)       
     {   
-        q=p;                        /* 保存p */ 
-        p=p->next;           /* p向前推进一个结点 */
+        q=p;                         
+        p=p->next;          
         //free((void *)(q->title));
         //q->title=NULL;
         //free((void *)(q->authors));
         //q->authors=NULL;
-        DeleteNode(q);             /* 删除结点*q */
+        DeleteNode(q);            
     }
     return ;
 }
@@ -402,7 +414,7 @@ BookList find_book_by_title (const char *title,BookList *all_book){
 
     
     Book *first;
-    CreateNode(first);     /* 建立附加头结点 */
+    CreateNode(first);    
     find_book->list = first;
     first_book_get(find_book);
 
@@ -422,14 +434,13 @@ BookList find_book_by_title (const char *title,BookList *all_book){
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
 //list is the NULL pointer.
 BookList find_book_by_author (const char *author,BookList *all_book){
-    //if (!all_book)
-		//load_books(all_book);
+    
     Book *p=all_book->list->next;
     BookList *find_book = (BookList *)malloc( sizeof(BookList) );
 
     
     Book *first;
-    CreateNode(first);     /* 建立附加头结点 */
+    CreateNode(first);     
     find_book->list = first;
     first_book_get(find_book);
     
@@ -450,14 +461,13 @@ BookList find_book_by_author (const char *author,BookList *all_book){
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
 //list is the NULL pointer.
 BookList find_book_by_year (unsigned int year,BookList *all_book){
-    //if (!all_book)
-		//load_books(all_book);
+    
     Book *p=all_book->list->next;
     BookList *find_book = (BookList *)malloc( sizeof(BookList) );
 
     
     Book *first;
-    CreateNode(first);     /* 建立附加头结点 */
+    CreateNode(first);     
     find_book->list = first;
     first_book_get(find_book);
     
@@ -489,7 +499,6 @@ void printbook(BookList h,int option)
     int interval=7;  
     
     //printf the header
-    
     printf("%-5s","ID");
     for(int i=1;i<=interval-5;i++)printf(" ");
     printf("Title");
@@ -510,7 +519,6 @@ void printbook(BookList h,int option)
         int tl=strlen(p->title);
         int al=strlen(p->authors);
         
-        //printf("%d\t%s\t%s\t%d\t%d\n",p->id,p->title,p->authors,p->year,p->copies);
         printf("%-5d",p->id);
         for(int i=1;i<=interval-5;i++)printf(" ");
         printf("%s",p->title);
@@ -531,71 +539,3 @@ void printbook(BookList h,int option)
     }
     return;
 } 
-
-/*
-int main(){
-
-    
-    //char *title;
-    //title=(char*)malloc(sizeof(char)*6);
-    //scanf("%s",title);
-    //int l=strlen(title);
-    //printf("%s %d\n",title,l);
-    //scanf("%s",title);
-    //l=strlen(title);
-    //printf("%s %d\n",title,l);
-    //free((void *)title); 
-
-    char* bookFile="user.txt";
-    
-    //BookList *all_book = (BookList *)malloc( sizeof(BookList) );
-    UserList *all_user = (UserList *)malloc( sizeof(UserList) );
-
-    FILE *fp = NULL;
-    fp = fopen(bookFile, "r");
-    if(fp==NULL)
-    {
-        //use the error message and exit the program if it does not
-        printf("Error\nBook file does not exist: %s\n",bookFile);
-        exit(0);
-    }
-    else
-    {
-        //load_books(fp, all_book);
-        load_users(fp, all_user);
-        
-        fclose(fp);
-        
-    }
-    
-    //printbook(*all_book);
-    //SearchBook( all_book );
-    //add_book(input_add_book(all_book),all_book);
-    //remove_book((input_remove_book(all_book)),all_book);
-     
-    //printbook(*all_book);
-    //fp = fopen(bookFile, "w+");
-    //store_books(fp,all_book);
-    //fclose(fp);
-
-    //search 测试
-    //const char *title_test="Harry";
-    //char title_test[80]="Harry";
-    //const char *author_test="asdff";
-    //unsigned int year_test=1997;
-    //printbook(find_book_by_title (title_test,all_book));
-    //printbook(find_book_by_author (author_test,all_book));
-    //printbook(find_book_by_year (year_test,all_book));
-    //user 测试
-    
-    printf("%s\t\t%s\n",all_user->list->next->username,all_user->list->next->password);
-    //free(all_book);
-    free( all_user );
-
-    //char* name;
-    //name=(char*)malloc(sizeof(char)*80);
-    //fgets(name,80,stdin);
-    //printf("%s %ld\n",name,strlen(name));
-    return 0;
-}
-*/
