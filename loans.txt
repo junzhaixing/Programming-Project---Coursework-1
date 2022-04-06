@@ -1,6 +1,6 @@
 librarian
-gangyi-3
-terence-1-2-3-5-4
+gangyi
+terence-1-2-3-5
 eqaea
 qeqeq
-Sam-5
+Sam

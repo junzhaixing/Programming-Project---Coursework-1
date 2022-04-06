@@ -78,6 +78,10 @@ int input_add_loan(User* user,BookList*all_book){
         printf("Sorry, the id you enterd don't exsist.\n");
         return 0;
     }
+    if(k->copies==0){
+        printf("Sorry, the id you enterd have no copies.\n");
+        return 0;
+    }
     Book* p=user->loans->list->next;
     while(p)
     {
@@ -310,7 +314,7 @@ void librarianCLI( BookList *all_book, UserList *all_user) {
         if( option == 1 ) {//add a book
             Book* add=input_add_book(all_book);
             if(add!=NULL) {
-                int success=add_book(*add,all_book);
+                int success=add_book(*add,all_book,1);
                 if( success == 0)   
                 printf("Book was successfully added!\n"); 
             }  
