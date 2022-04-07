@@ -3,7 +3,7 @@ https://github.com/junzhaixing/Programming-Project---Coursework-1
 Please note that all input in this program are sensitive
 
 Use “make all” compiles your code to generate an executable binary  
-Execute the command "./library" to run the executable binary  
+Execute the command "./library book.txt user.txt loans.txt" to run the executable binary  
 Use “make clean” removes the executable binary  
 
 librarian account:  

@@ -85,8 +85,6 @@ void delete_search_book(Book* temp_search);
 
 void delete_book(BookList *all_book);
 
-
-
 //finds books with a given title.
 //returns a BookList structure, where the field "list" is a list of books, or null if no book with the 
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case

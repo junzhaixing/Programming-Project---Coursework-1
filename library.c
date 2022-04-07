@@ -15,25 +15,31 @@ void initLibrary( BookList *all_book, UserList *all_user){
   FILE *fp = NULL;
   fp = fopen(bookFile, "r");
   int bookFile_error=load_books(fp, all_book);
+  if(bookFile_error==-2){
+    printf("Error loading book file\n");
+    exit(0);
+  }
   fclose(fp);
-  if(bookFile_error==-2)
-  printf("Error loading book file\n");
   
   char* userFile="user.txt";
   fp = NULL;
   fp = fopen(userFile, "r");
   int userFile_error=load_users(fp, all_user);
+  if(userFile_error==-2){
+    printf("Error loading user file\n");
+    exit(0);
+  }
   fclose(fp);
-  if(userFile_error==-2)
-  printf("Error loading user file\n");
   
   char* loanFile="loans.txt";
   fp = NULL;
   fp = fopen(loanFile, "r");
   int loanFile_error=load_loans(fp, all_user, all_book);
+  if(loanFile_error==-2){
+    printf("Error loading loan file\n");
+    exit(0); 
+  }
   fclose(fp);
-  if(loanFile_error==-2)
-  printf("Error loading loan file\n");
   
   return;
 }
@@ -92,21 +98,9 @@ void libraryCLI(){
     BookList *all_book = (BookList *)malloc( sizeof(BookList) );
     UserList *all_user = (UserList *)malloc( sizeof(UserList) );
     
+    // read the library
     initLibrary( all_book, all_user );
     
-    printbook(*all_book,1);
-    User *p=all_user->list->next;
-    User *k=all_user->list->next;
-    while(p){
-        printf("%s\t%s\n",p->username,p->password);
-        p=p->next;
-    }
-    while(k){
-        printf("%s\n",k->username);
-        printbook(*(k->loans),2);
-        k=k->next;
-    }
-
     while( libraryOpen ){
         printf("\nPlease choose an option\n1) Register an account\n2) login\n3) Search for book\n4) Display all book\n5) Quit\n Option:");
         option = optionChoice();

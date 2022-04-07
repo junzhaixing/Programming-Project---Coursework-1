@@ -24,7 +24,7 @@ void SearchBook( BookList *all_book )
             fgets(title,1024,stdin);
             removeNewLine(title);
             BookList k=find_book_by_title (title,all_book);
-            printbook(k,1);
+            printbook(k,3);
 
             delete_search_book(k.list);
         }
@@ -34,7 +34,7 @@ void SearchBook( BookList *all_book )
             fgets(author,1024,stdin);
             removeNewLine(author);
             BookList k=find_book_by_author (author,all_book);
-            printbook(k,1);
+            printbook(k,3);
 
             delete_search_book(k.list);
         }
@@ -43,11 +43,11 @@ void SearchBook( BookList *all_book )
             printf("\nPlease enter the year: ");
             year = optionChoice();
             if(year==-1)
-               printf("Sorry,the year you entered was invalid, please try again.\n");
+               printf("Sorry, the year you entered was invalid, please try again.\n");
             else 
             {
                BookList k=find_book_by_year (year,all_book);
-               printbook(k,1);
+               printbook(k,3);
                delete_search_book(k.list);
             }
         }
@@ -56,7 +56,7 @@ void SearchBook( BookList *all_book )
             printf("\nReturning to previous menu...\n");
         }
         else
-            printf("\nSorry,the option you entered was invalid, please try again.\n");
+            printf("\nSorry, the option you entered was invalid, please try again.\n");
       }
 }
 
@@ -66,8 +66,9 @@ int input_add_loan(User* user,BookList*all_book){
     printf("\nEnter the ID of the book you wish to borrow: ");
     l_id=optionChoice();
     if(l_id==-1){
-    printf("Sorry,the id you entered was invalid, please try again.\n");
-    return 0;}
+    printf("Sorry, the id you entered was invalid, please try again.\n");
+    return 0;
+    }
     Book* k=all_book->list->next;
     int h_i=0;
     while(k)
@@ -108,7 +109,7 @@ int input_remove_loan(User* user,BookList*all_book){
     printf("Enter the ID number of the book you wish to return: ");
     l_id=optionChoice();
     if(l_id==-1){
-        printf("Sorry,the id you entered was invalid.\n");
+        printf("Sorry, the id you entered was invalid.\n");
         return 0;
     }
     Book* k=user->loans->list->next;
@@ -123,12 +124,12 @@ int input_remove_loan(User* user,BookList*all_book){
         k=k->next;
     }
     if(h_i==0){
-        printf("Sorry,you don't have the copy of this book!\n");
+        printf("Sorry, you don't have the copy of this book!\n");
         return 0;
     }
     //judge if library don't have copies of this book
     if(k->copies==0){
-        printf("Sorry,the copy of this book is none!\n");
+        printf("Sorry, the copy of this book is none!\n");
         return 0;
     }
     return l_id;
@@ -141,7 +142,7 @@ Book* input_remove_book(BookList *all_book){
     remove->id = optionChoice();
     
     if(remove->id==-1){
-        printf("Sorry,the id you entered was invalid.\n");
+        printf("Sorry, the id you entered was invalid.\n");
         return NULL;
         }
     
@@ -155,7 +156,7 @@ Book* input_remove_book(BookList *all_book){
         same=same->next;
     }
     if(judge==0){
-        printf("Sorry,the library don't have this book.\n");
+        printf("Sorry, the library don't have this book.\n");
         return NULL;
     }
     remove->title="meiyong";
@@ -180,17 +181,17 @@ Book* input_add_book(BookList *all_book){
     removeNewLine(title);
     //judge if the book title is right
     if(strlen(title)==0){
-        printf("Sorry,the title can't be empty.\n");
+        printf("Sorry, the title can't be empty.\n");
         return NULL;
     }
     else if(strchr(title,c)!=NULL)
     {
-        printf("Sorry,title can't have \'-\' .\n");
+        printf("Sorry, title can't have \'-\' .\n");
         return NULL;
     }
     for(int i=0;i<strlen(title)-1;i++){
         if(title[i]==' '&&title[i+1]==' '){
-            printf("Sorry,the title can't have two or more consecutive Spaces.\n");
+            printf("Sorry, the title can't have two or more consecutive Spaces.\n");
             return NULL;
         }
     }
@@ -199,7 +200,7 @@ Book* input_add_book(BookList *all_book){
     removeNewLine(authors);
     //judge if the author title is right
     if(strlen(authors)==0){
-        printf("Sorry,the author can't be empty.\n");
+        printf("Sorry, the author can't be empty.\n");
         return NULL;
     }
     else if(strchr(authors,c)!=NULL)
@@ -209,7 +210,7 @@ Book* input_add_book(BookList *all_book){
     }
     for(int i=0;i<strlen(authors)-1;i++){
         if(authors[i]==' '&&authors[i+1]==' '){
-            printf("Sorry,the title can't have two or more consecutive Spaces.\n");
+            printf("Sorry, the title can't have two or more consecutive Spaces.\n");
             return NULL;
         }
     }
@@ -217,7 +218,7 @@ Book* input_add_book(BookList *all_book){
     Book* same=all_book->list->next;
     while(same){
         if((!strcmp(same->title,title))&&(!strcmp(same->authors,authors))){
-            printf("Sorry,the library is already have this book.\n");
+            printf("Sorry, the library is already have this book.\n");
             return NULL;
         }
         same=same->next;
@@ -226,15 +227,19 @@ Book* input_add_book(BookList *all_book){
     printf("Enter the year of the book you wish to add was released: ");
     input->year = optionChoice();
     //judge the year is right
-    if(input->year==-1||input->year>2022){
-        printf("Sorry,the year you entered was invalid.\n");
+    if(input->year==-1){
+        printf("Sorry, the year you entered was invalid.\n");
         return NULL;
     }
-    
+    else if(input->year>2022){
+        printf("Sorry, the year should less than 2022.\n");
+        return NULL;
+    }
+
     printf("Enter the number of copies of the book that you wish to add: ");
     input->copies = optionChoice();
     if(input->copies==-1){
-        printf("Sorry,the copies you entered was invalid.\n");
+        printf("Sorry, the copies you entered was invalid.\n");
         return NULL;
     }
     input->title=(char*)malloc(sizeof(char)*(strlen(title)+1));

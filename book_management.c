@@ -233,9 +233,7 @@ int add_loans(int id, int option,User* user,BookList *all_book){
         last->copies--;
     }
     if(last==NULL)return -2;
-    
     add_book(*last,user->loans,2);
-    
     user->loans->length++;
     return 0;
 }
@@ -331,7 +329,10 @@ int add_book(Book book,BookList *all_book,int option){
     p->year=book.year;
     p->copies=book.copies;
     
+    //The ID will take precedence over the previously deleted ID value, 
+    //and if it does not, it will be added last  
     all_book->length++;
+    //normal part
     if(book.id+1==all_book->length||option==2){
        while(last->next){
             last=last->next;
@@ -339,6 +340,7 @@ int add_book(Book book,BookList *all_book,int option){
         last->next=p;
         p->next=NULL;
     }
+    //if the id remove before
     else if(book.id+1<all_book->length){
         while(last->next){
             if(last->id==book.id-1){
@@ -399,8 +401,6 @@ void delete_book(BookList *all_book){
     return;
 }
 
-
-
 //finds books with a given title.
 //returns a BookList structure, where the field "list" is a list of books, or null if no book with the 
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
@@ -447,7 +447,6 @@ BookList find_book_by_author (const char *author,BookList *all_book){
         }
         p=p->next;
     }
-
 	return *find_book;
 }
 
@@ -472,7 +471,6 @@ BookList find_book_by_year (unsigned int year,BookList *all_book){
         }
         p=p->next;
     }
-
 	return *find_book;
 }
 
@@ -489,7 +487,11 @@ void printbook(BookList h,int option)
         return;
     }
     else if(p==NULL&&option==2){
-        printf("You don't borrow book!\n");
+        printf("Sorry, you don't borrow any book!\n");
+        return;
+    }
+    else if(p==NULL&&option==3){
+        printf("Sorry, no book is found!\n");
         return;
     }
     int interval=7;  
