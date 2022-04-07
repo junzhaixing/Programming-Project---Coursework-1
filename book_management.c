@@ -12,13 +12,11 @@ void first_book_get(BookList *p){
     p->length=1;
     //Header node initialization
     p->list->id=0;
-    
+    char temp[100]="xuni";
     p->list->title=(char*)malloc(sizeof(char)*5);
-    p->list->title="xuni";
-    
+    strcpy(p->list->title,temp);
     p->list->authors=(char*)malloc(sizeof(char)*5);
-    p->list->authors="xuni";
-    
+    strcpy(p->list->authors,temp);
     p->list->next=NULL;
     
     p->list->year=0000;
@@ -39,6 +37,8 @@ int store_books(FILE *file,BookList *all_book){
     return 0;
 }
 
+//saves the database of users in the specified file
+//returns 0 if books were stored correctly, or an error code otherwise
 int store_users(FILE *file,UserList *all_user){
     User *last;
     last=all_user->list->next;
@@ -51,6 +51,8 @@ int store_users(FILE *file,UserList *all_user){
     return 0;
 }
 
+//saves the database of loans in the specified file
+//returns 0 if books were stored correctly, or an error code otherwise
 int store_loans(FILE *file,UserList *all_user){
     User *last;
     last=all_user->list->next;
@@ -89,11 +91,8 @@ int load_books(FILE *file, BookList *all_book){
     char line[1024];
     while((fgets(line,1024,file)) != NULL)
     { 
-        //removeNewLine(line);
         Book *p;
-
         CreateNode(p);
-        //const char s[2] = "-";
         char* fenduan;
         fenduan=strtok(line, "-");
         p->id=(int)atoi(fenduan);
@@ -117,7 +116,6 @@ int load_books(FILE *file, BookList *all_book){
         
         fenduan=strtok(NULL, "-");
         p->copies=(int)atoi(fenduan);
-        //test
         
         last->next=p;last=p; 
         x++;        
@@ -130,7 +128,7 @@ int load_books(FILE *file, BookList *all_book){
 
 }
 
-//load users to list
+//load users to list,return 0 if is loaded rightly
 int load_users(FILE *file, UserList *all_user)
 {
     if(file==NULL||all_user==NULL){
@@ -142,39 +140,39 @@ int load_users(FILE *file, UserList *all_user)
     first=(User*)malloc(sizeof(User));
     all_user->list = first;
 
-   //Header node initialization
-    first->username="xuni";
-    first->password="xuni";
-    first->loans=NULL;
-    
-    // last always points to last pointer 
+    //Header node initialization
+    char temp[100]="xuni";
+    first->username=(char*)malloc(sizeof(char)*5);
+    strcpy(first->username,temp);
+    first->password=(char*)malloc(sizeof(char)*5);
+    strcpy(first->password,temp);
+    first->loans=(BookList*)malloc(sizeof(BookList));
+    first->loans->list=(Book*)malloc(sizeof(Book));
+    first_book_get(first->loans);
+
+    //last always points to last pointer 
     last=first;         
     char line[1024];
     while((fgets(line,1024,file)) != NULL)
     { 
         
         removeNewLine(line);
-        
         User *p;
         p=(User*)malloc(sizeof(User));
-        //const char s[2] = "-";
+        //Cut the read line into the required information
         char* fenduan;
         fenduan=strtok(line, "-");
         p->username=(char*)malloc(sizeof(char)*(strlen(fenduan)+1));
-        
         strcpy(p->username,fenduan);
         
         fenduan=strtok(NULL, "-");
         p->password=(char*)malloc(sizeof(char)*(strlen(fenduan)+1));
-        
         strcpy(p->password,fenduan);
-        
-
+        //Header node initialization
         p->loans=(BookList*)malloc(sizeof(BookList));
         p->loans->list=(Book*)malloc(sizeof(Book));
         first_book_get(p->loans);
         
-      
         last->next=p;last=p; 
         x++;        
     }
@@ -183,6 +181,7 @@ int load_users(FILE *file, UserList *all_user)
     return 0;
 }
 
+//load loans to list,return 0 if is loaded rightly
 int load_loans(FILE *file, UserList *all_user,BookList *all_book){
     if(file==NULL||all_user==NULL){
         return -2;
@@ -222,7 +221,7 @@ int add_loans(int id, int option,User* user,BookList *all_book){
     Book *last;
     last=all_book->list->next;
     
-
+    //find which book should add
     while(last){
         if(last->id==id)
             break;
@@ -248,6 +247,7 @@ int remove_loans(int id, User* user,BookList *all_book){
     while(last->id!=id){
         last=last->next;
     }
+    //add copies for this book in library
     while(p){
         if(p->id==id){
             p->copies++;
@@ -266,14 +266,15 @@ int remove_loansBy_libraian(int id, UserList* all_user,BookList *all_book){
     p=all_user->list->next;
     while(p){
         Book* k=p->loans->list->next;
+        //judge if this user have this book
         int h_i=0;
         while(k)
         {
-        if(k->id==id){
-            h_i=1;
-            break;
-            }
-        k=k->next;
+            if(k->id==id){
+                h_i=1;
+                break;
+                }
+            k=k->next;
         }
         if(h_i==1) remove_loans(id,p,all_book);
         p=p->next;
@@ -312,7 +313,6 @@ int add_user(User user,UserList *all_user){
 //returns 0 if the book could be added, or an error code otherwise
 int add_book(Book book,BookList *all_book,int option){
 
-   
     Book *p,*last;
     last=all_book->list;
     CreateNode(p);
@@ -350,7 +350,6 @@ int add_book(Book book,BookList *all_book,int option){
         last->next=p;
         p->next=temp;
     }
-    
     return 0;
 }
 
@@ -378,32 +377,39 @@ int remove_book(Book book,BookList *all_book){
     else return 1;
 }
 
+//free the search book list
+void delete_search_book(Book* temp_search){
+    BookList* temp = (BookList *)malloc( sizeof(BookList) );
+    temp->length=temp->title_longest=temp->authors_longest=0;
+    temp->list=temp_search;
+    delete_book(temp);
+}
+
+//free a book to the ones available to the library
 void delete_book(BookList *all_book){
     Book *p=all_book->list,*q;
     while(p)       
     {   
         q=p;                         
         p=p->next;          
-        //free((void *)(q->title));
-        //q->title=NULL;
-        //free((void *)(q->authors));
-        //q->authors=NULL;
+        free((void *)(q->title));
+        free((void *)(q->authors));
         DeleteNode(q);            
     }
-    return ;
+    return;
 }
+
+
 
 //finds books with a given title.
 //returns a BookList structure, where the field "list" is a list of books, or null if no book with the 
 //provided title can be found. The length of the list is also recorded in the returned structure, with 0 in case
 //list is the NULL pointer.
 BookList find_book_by_title (const char *title,BookList *all_book){
-    //if (!all_book)
-		//load_books(all_book);
+    
     Book *p=all_book->list->next;
     BookList *find_book = (BookList *)malloc( sizeof(BookList) );
 
-    
     Book *first;
     CreateNode(first);    
     find_book->list = first;
@@ -429,7 +435,6 @@ BookList find_book_by_author (const char *author,BookList *all_book){
     Book *p=all_book->list->next;
     BookList *find_book = (BookList *)malloc( sizeof(BookList) );
 
-    
     Book *first;
     CreateNode(first);     
     find_book->list = first;
@@ -444,7 +449,6 @@ BookList find_book_by_author (const char *author,BookList *all_book){
     }
 
 	return *find_book;
-
 }
 
 //finds books published in the given year.
@@ -456,7 +460,6 @@ BookList find_book_by_year (unsigned int year,BookList *all_book){
     Book *p=all_book->list->next;
     BookList *find_book = (BookList *)malloc( sizeof(BookList) );
 
-    
     Book *first;
     CreateNode(first);     
     find_book->list = first;
@@ -471,14 +474,16 @@ BookList find_book_by_year (unsigned int year,BookList *all_book){
     }
 
 	return *find_book;
-
 }
 
 //display all book
+//have two option,option 1 display the book from library,
+//option 2 display book by loans, which not have copies
 void printbook(BookList h,int option)    
 {   
     
     Book *p=h.list->next;
+    //if not have any book
     if(p==NULL&&option==1){
         printf("There have no book in this library!\n");
         return;
@@ -525,7 +530,6 @@ void printbook(BookList h,int option)
         else if(option==2){
             printf("\n");
         }
-
         p=p->next; 
     }
     return;

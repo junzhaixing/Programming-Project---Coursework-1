@@ -5,6 +5,7 @@
 #include "book_management.h"
 #include "utility.h"
 
+//user register
 void reg(UserList* ul)
 {
     User login_user;
@@ -105,8 +106,7 @@ User* login(UserList* ul)
     //judge if the user is librarian
     if((!strcmp(name,"librarian"))&&(!strcmp(password,"librarian")))
     {   
-        judge=2;
-        
+        judge=2; 
     }
     //return the information for difference condition
     if(judge==0)

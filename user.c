@@ -25,6 +25,8 @@ void SearchBook( BookList *all_book )
             removeNewLine(title);
             BookList k=find_book_by_title (title,all_book);
             printbook(k,1);
+
+            delete_search_book(k.list);
         }
         else if( option == 2 ) {//search by author
             char author[1024];
@@ -33,7 +35,8 @@ void SearchBook( BookList *all_book )
             removeNewLine(author);
             BookList k=find_book_by_author (author,all_book);
             printbook(k,1);
-            
+
+            delete_search_book(k.list);
         }
         else if( option == 3 ) {//search by year
             int year;
@@ -45,6 +48,7 @@ void SearchBook( BookList *all_book )
             {
                BookList k=find_book_by_year (year,all_book);
                printbook(k,1);
+               delete_search_book(k.list);
             }
         }
         else if( option == 4 ) {//return back
@@ -174,6 +178,7 @@ Book* input_add_book(BookList *all_book){
     printf("\nEnter the title of the book you wish to add: ");
     fgets(title,1024,stdin);
     removeNewLine(title);
+    //judge if the book title is right
     if(strlen(title)==0){
         printf("Sorry,the title can't be empty.\n");
         return NULL;
@@ -192,6 +197,7 @@ Book* input_add_book(BookList *all_book){
     printf("Enter the author of the book you wish to add: ");
     fgets(authors,1024,stdin);
     removeNewLine(authors);
+    //judge if the author title is right
     if(strlen(authors)==0){
         printf("Sorry,the author can't be empty.\n");
         return NULL;
@@ -207,7 +213,7 @@ Book* input_add_book(BookList *all_book){
             return NULL;
         }
     }
-
+    //judge if library have this book
     Book* same=all_book->list->next;
     while(same){
         if((!strcmp(same->title,title))&&(!strcmp(same->authors,authors))){
@@ -218,8 +224,8 @@ Book* input_add_book(BookList *all_book){
     }
 
     printf("Enter the year of the book you wish to add was released: ");
-    
     input->year = optionChoice();
+    //judge the year is right
     if(input->year==-1||input->year>2022){
         printf("Sorry,the year you entered was invalid.\n");
         return NULL;
@@ -231,7 +237,6 @@ Book* input_add_book(BookList *all_book){
         printf("Sorry,the copies you entered was invalid.\n");
         return NULL;
     }
-
     input->title=(char*)malloc(sizeof(char)*(strlen(title)+1));
     strcpy(input->title,title);
     input->authors=(char*)malloc(sizeof(char)*(strlen(authors)+1));
@@ -249,8 +254,7 @@ Book* input_add_book(BookList *all_book){
             return input;
         }
     }
-    input->id=last->id+1;//id is the bigggist id +1
-
+    input->id=last->id+1;//id is the bigggist id + 1
     return input;
 }
 
@@ -315,8 +319,10 @@ void librarianCLI( BookList *all_book, UserList *all_user) {
             Book* add=input_add_book(all_book);
             if(add!=NULL) {
                 int success=add_book(*add,all_book,1);
-                if( success == 0)   
-                printf("Book was successfully added!\n"); 
+                if( success == 0){
+                   printf("Book was successfully added!\n");
+                   free(add); 
+                }      
             }  
         }
         else if( option == 2 ) {//remove a book
@@ -325,8 +331,11 @@ void librarianCLI( BookList *all_book, UserList *all_user) {
                 remove_loansBy_libraian(p->id, all_user,all_book);
                 int success=remove_book(*p,all_book);
                 
-                if( success == 0)   
-                printf("Book was successfully removed!\n");
+                if( success == 0){
+                    printf("Book was successfully removed!\n");
+                    free(p);
+                }   
+                
             }
         }
         else if( option == 3 ) {//search for one book

@@ -5,8 +5,7 @@
 
 #define CreateNode(p)  p=(Book*)malloc(sizeof(Book));
 #define DeleteNode(p)   free((void *)p); 
-// git commit -m "xxx"
-// git push 
+ 
 /*You can extend the structs (Book and BookList) defined in this head file;
   However, you may not change the function prototypes. 
   You are also free to add additional head files and data structures as needed. 
@@ -82,7 +81,11 @@ int remove_book(Book book,BookList *all_book);
 
 int remove_loansBy_libraian(int id, UserList* all_user,BookList *all_book);
 
+void delete_search_book(Book* temp_search);
+
 void delete_book(BookList *all_book);
+
+
 
 //finds books with a given title.
 //returns a BookList structure, where the field "list" is a list of books, or null if no book with the 

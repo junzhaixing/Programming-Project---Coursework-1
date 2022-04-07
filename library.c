@@ -68,13 +68,12 @@ void exitLibrary( BookList *all_book, UserList *all_user) {
     
     // free the allocated lists
     delete_book(all_book);
-    //printf("deletebook\n");
     User *p=all_user->list,*q;
     while(p)      
     {   
-        //free(p->username);
-        //free(p->password);
-        //delete_book(p->loans);
+        free(p->username);
+        free(p->password);
+        delete_book(p->loans);
         free(p->loans);
         q=p;                         
         p=p->next;           
