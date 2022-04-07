@@ -1,5 +1,5 @@
 # COMP1921 Programming Project Coursework 1  
-https://github.com/junzhaixing/Programming-Project---Coursework-1  
+https://github.com/junzhaixing/Programming-Project---Coursework-1.git  
 Please note that all input in this program are sensitive
 
 Use "make all" compiles your code to generate an executable binary  
